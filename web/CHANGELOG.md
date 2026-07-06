@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/santifer/career-ops/compare/web-v0.2.0...web-v0.2.1) (2026-07-06)
+
+
+### Bug Fixes
+
+* **deps:** update npm dependencies ([#1593](https://github.com/santifer/career-ops/issues/1593)) ([253c571](https://github.com/santifer/career-ops/commit/253c5719df403cdaa493db27cdd17349f54f7889))
+
 ## [0.2.0](https://github.com/santifer/career-ops/compare/web-v0.1.0...web-v0.2.0) (2026-07-05)
 
 
