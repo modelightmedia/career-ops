@@ -7,14 +7,11 @@ used in CVs, cover letters, interview answers or scoring.**
 Source PDFs live in `documents/` (`Is-i-bdm-prf JASON COELHO.pdf`, `Is-i-bdm-ifp.pdf`).
 Narrative interpretation lives in `modes/_profile.md`; this file is the raw record.
 
-> **TYPE DIVERGENCE — unresolved, and worth resolving.** Three different records exist:
-> `modes/_profile.md` says **INTP**; Jason mentioned INTJ on 2026-08-15 (since confirmed as just an
-> illustrative example, disregard); and **Apt's integrated analysis returns INFJ**. INTP and INFJ
-> share introversion and intuition but differ on the judging function — INTP leads with detached
-> analysis (Ti), INFJ with values and people (Fe). That materially changes how he is framed in a
-> cover letter or an interview. Apt has a "MBTI Type Shift Analysis" conversation from 2025-10-19
-> which may already explain the shift. **Do not use a type claim in any user-facing document until
-> this is settled.**
+> **TYPE RESOLVED (2026-08-15): INTP.** Jason confirmed INTP is the best fit, and it corroborates
+> across instruments — Enneagram 5w6, CliftonStrengths Intellection/Strategic/Ideation, Holland
+> Investigative, and the Spiral path in the flight guide all point the same way. Apt's INFJ is
+> recorded below as a dissenting single result, not the working assumption. INTP is usable in
+> documents.
 
 ---
 
@@ -22,7 +19,7 @@ Narrative interpretation lives in `modes/_profile.md`; this file is the raw reco
 
 | Instrument | Result | Date | Notes |
 |---|---|---|---|
-| MBTI-style type | INTP *(or INTJ — see above)* | — | Introverted, analytical, integrative. Processes then acts. |
+| MBTI | **INTP** — confirmed 2026-08-15 | — | Introverted, analytical, integrative. Processes then acts. |
 | Enneagram | Type 5 | — | Investigator. Conserves energy, wants competence before exposure. |
 | Truity Big Five | *(scores to add)* | — | Recorded as taken; individual trait scores not yet captured here. |
 | iEQ9 | *(result to add)* | — | Recorded as taken; full report not yet captured here. |
@@ -66,7 +63,7 @@ This is the most complete single source in the file.
 
 | Framework | Result |
 |---|---|
-| MBTI | **INFJ** — "The Insightful Counselor" |
+| MBTI | INFJ *(dissents from INTP — recorded, not adopted)* |
 | DiSC | **Sd** — Steadiness dominant, Influence secondary |
 | Holland Code | **AIR** — Artistic · Investigative · Social |
 | Big Five | High **Openness**, high **Agreeableness**, moderate cautiousness |
@@ -109,6 +106,68 @@ Roles that hit only one, or that demand Enterprising-dominant behaviour (aggress
 self-promotion, commission-only), sit against the profile — which is consistent with both the
 anti-archetype list and the DiSC Steadiness result.
 
+## 6. Sales Manager assessment — full findings (SHL/TSM, via Ciovita)
+
+Summarised by Jason 2026-08-15 from the report PDF.
+
+**Verdict: MEETS the requirement** for people leadership · business development · judgement and
+decision-making · collaboration · persuasion · emotional intelligence.
+**CLOSE TO STANDARD, needs development:** operational excellence.
+
+**Strengths as assessed**
+- Participative leadership — invites input, builds rapport quickly
+- Adaptability and comfort with change in policy, workflow and conditions
+- Sound judgement — weighs perspectives, considers pros and cons
+- Relationship-building across teams and functions; values communication and after-sales service
+- Persuasion through listening, logical argument and constructive persistence
+- Emotional intelligence, particularly reading behaviour and motivation
+
+**Development areas as assessed**
+- **Commercial acumen** — using financial information to support recommendations
+- **Commercial framing** — linking arguments to commercial benefit and organisational challenge
+- **Stretch targets** — for himself and others
+- **Execution discipline** — clearer priorities, explicit timelines, systematic progress tracking
+- **Empathetic communication** — can deepen further, though collaboration is already a strength
+
+**The report's own read:** strong potential in roles requiring customer understanding,
+cross-functional collaboration and thoughtful leadership. The clearest growth path is becoming more
+commercially rigorous and operationally structured.
+
+## 7. Flight guide — working-mode archetype
+
+A different kind of instrument: how he *works*, not what he is like.
+
+**Dominant path — SPIRAL.** The long-term home base. Growth comes through depth: revisiting ideas
+over time, seeing systems from multiple angles, building layered understanding rather than chasing
+output. This corroborates INTP, Enneagram 5, Intellection and Holland Investigative.
+
+**Seasonal path — HORIZON LINE.** The current phase: sustained focus, consistency, refinement, and
+visible progress toward one meaningful long-term goal.
+
+**Core message.** Consistent execution is not separate from learning — it is the method by which
+deeper understanding develops.
+
+**The advice filter it offers:** *"Does this advice help me stay with something until I understand
+it deeply?"* Useful for triaging roles and opportunities, not just advice.
+
+**Watch for a shift toward:** more reflection and integration · more experimentation via quick
+tests · more cross-domain pattern-spotting.
+
+## 8. Where the two agree
+
+- Strength is depth, reflection and relationship-building — not speed
+- Thoughtful communication and systems thinking recur as assets in both
+- The single limiting factor is **execution structure and commercial framing**, not capability
+- Next step in both: sustained focus on one valuable goal, with measurable progress and clearer
+  commercial framing
+
+**Recommended actions from the flight guide** (Jason's own summary, worth holding as goals):
+1. Choose one flagship project or goal and define a 90-day outcome
+2. Build a weekly scorecard with a few commercial and delivery metrics
+3. Use a standard decision template: customer problem, opportunity, financial impact, owner, deadline
+4. Raise target ambition, make timelines explicit
+5. Keep sustained focus as the strength, but give it a visible operating rhythm
+
 ---
 
 ## How this steers the search
@@ -141,8 +200,8 @@ Worth holding beside the assessments, because it is the only evidence drawn from
 
 ## Gaps to fill
 
-- [ ] Resolve INTP vs INFJ — read the Apt "MBTI Type Shift Analysis" (2025-10-19)
+- [x] ~~Resolve INTP vs INFJ~~ — resolved to INTP, 2026-08-15
 - [ ] Add Truity Big Five numeric trait scores (Apt gives direction, not numbers)
 - [ ] Add the iEQ9 result
-- [ ] Extract the key findings from the `Is-i-bdm-*` PDFs in `documents/`
+- [x] ~~Extract the assessment PDFs~~ — summarised by Jason, section 6 below
 - [ ] Add any recruiter or manager feedback that amounts to an external read
