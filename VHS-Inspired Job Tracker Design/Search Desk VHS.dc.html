@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/modernist-8ec2ac42-b224-48db-bb9d-d219fcda2c7e/styles.css">
+<script src="_ds/modernist-8ec2ac42-b224-48db-bb9d-d219fcda2c7e/_ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Narrow:wght@600;700&family=Roboto+Mono:wght@400;500;700&display=swap">
+<style>
+html,body{margin:0;padding:0;background:#16181A}
+body{font-family:"Archivo",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+::selection{background:#A8451C;color:#fff}
+a{color:#1F3D6B;text-decoration:none}
+a:hover{text-decoration:underline}
+input,textarea,select,button{font-family:inherit}
+button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2px}
+@keyframes sdreel{to{transform:rotate(360deg)}}
+@keyframes sdblink{0%,55%{opacity:1}56%,100%{opacity:.2}}
+</style>
+</helmet>
+
+<div style="{{ vars }}">
+<div style="min-height:100vh;background:var(--sd-ground,#E9EBE6);color:var(--sd-ink,#16181A)">
+
+<header style="position:sticky;top:0;z-index:40;background:var(--sd-ink,#16181A);border-bottom:2px solid var(--sd-ink,#16181A)">
+  <div style="max-width:1080px;margin:0 auto;padding:0 16px;display:flex;align-items:stretch;gap:14px">
+    <div style="display:flex;align-items:center;gap:9px;padding:9px 0;flex:none">
+      <div style="width:22px;height:22px;background:var(--sd-accent,#A8451C);display:flex;align-items:center;justify-content:center">
+        <div style="width:8px;height:8px;border:2px solid #fff"></div>
+      </div>
+      <span style="font:900 15px/1 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.06em;color:#fff">SD</span>
+    </div>
+    <nav style="display:flex;gap:0;overflow-x:auto;flex:1;min-width:0">
+      <sc-for list="{{ nav }}" as="n" hint-placeholder-count="6">
+        <button onClick="{{ n.go }}" style="{{ n.style }}">{{ n.label }}</button>
+      </sc-for>
+    </nav>
+    <div style="display:flex;align-items:center;gap:6px;flex:none">
+      <button onClick="{{ toggleTheme }}" style="border:1px solid #5B615F;background:transparent;color:#E9EBE6;font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:7px 9px;cursor:pointer">{{ themeLabel }}</button>
+      <button style="border:1px solid #5B615F;background:transparent;color:#E9EBE6;font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:7px 9px;cursor:pointer">Out</button>
+    </div>
+  </div>
+  <div style="display:flex;height:4px">
+    <div style="flex:1;background:var(--sd-accent,#A8451C)"></div><div style="flex:1;background:#E0A32E"></div><div style="flex:1;background:#2F6B4F"></div><div style="flex:1;background:#1F3D6B"></div><div style="flex:1;background:#7A3B62"></div>
+  </div>
+</header>
+
+<main style="max-width:1080px;margin:0 auto;padding:26px 16px 60px;position:relative">
+<div style="position:absolute;inset:0;pointer-events:none;opacity:var(--sd-scan,.3);background:repeating-linear-gradient(180deg,rgba(22,24,26,.05) 0 1px,transparent 1px 3px);z-index:30"></div>
+
+<div style="position:relative;z-index:1">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap">
+  <div>
+    <div style="font:500 10px/1.3 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">{{ eyebrow }}</div>
+    <h1 style="font:700 46px/.9 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.005em;text-transform:uppercase;margin:9px 0 0">{{ title }}</h1>
+  </div>
+  <div style="display:flex;align-items:center;gap:7px;padding-bottom:5px">
+    <div style="width:7px;height:7px;background:var(--sd-accent,#A8451C);animation:sdblink 1.8s steps(1,end) infinite"></div>
+    <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;color:var(--sd-soft,#5B615F)">{{ counter }}</span>
+  </div>
+</div>
+<div style="height:2px;background:var(--sd-ink,#16181A);margin-top:16px"></div>
+
+<!-- ================= PIPELINE ================= -->
+<sc-if value="{{ isPipeline }}" hint-placeholder-val="{{ true }}">
+<div style="padding-top:22px;display:flex;flex-direction:column;gap:26px">
+
+  <div style="{{ healthStyle }}">
+    <div style="position:absolute;inset:0;opacity:.35;background-image:radial-gradient(#fff .7px,transparent .8px);background-size:6px 6px;pointer-events:none"></div>
+    <div style="position:relative;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap">
+      <div style="min-width:0">
+        <div style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.72)">Pipeline health · last 7 days</div>
+        <div style="font:700 26px/1.05 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.01em;text-transform:uppercase;color:#fff;margin-top:9px;max-width:34ch">{{ healthLine }}</div>
+        <div style="font:400 12px/1.5 Archivo,sans-serif;color:rgba(255,255,255,.72);margin-top:9px;max-width:52ch">{{ sourcedCount }} sourced roles waiting to be applied to. Job security doesn't exist — there must always be pipe.</div>
+      </div>
+      <div style="display:flex;align-items:flex-end;gap:4px;flex:none">
+        <sc-for list="{{ weekTicks }}" as="t" hint-placeholder-count="5">
+          <div style="{{ t }}"></div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div style="background:var(--sd-ink,#16181A);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <span style="font:700 11px/1 'Roboto Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#fff">Readout</span>
+      <span style="font:400 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:#9AA09C">SUPER HIGH GRADE · 30D WINDOW</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(31%,1fr));border:2px solid var(--sd-ink,#16181A);border-top:0;background:var(--sd-panel,#F3F4F0)">
+      <sc-for list="{{ stats }}" as="s" hint-placeholder-count="6">
+        <div style="{{ s.cellStyle }}">
+          <div style="height:5px;background:{{ s.bar }};margin:-1px -1px 13px"></div>
+          <div style="padding:0 13px 14px">
+            <div style="font:500 10px/1.25 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">{{ s.label }}</div>
+            <div style="font:700 34px/.85 'Roboto Mono',monospace;letter-spacing:-.02em;color:{{ s.ink }};margin-top:11px">{{ s.value }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--sd-ink,#16181A);padding-bottom:7px">
+      <h2 style="font:700 17px/1 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:0">Signal loss</h2>
+      <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">Ghost rate vs baseline</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px">
+      <div style="border:2px solid var(--sd-ink,#16181A);background:var(--sd-ink,#16181A);padding:16px 17px 18px;position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;opacity:var(--sd-tex,.4);background-image:radial-gradient(#E9EBE6 .7px,transparent .8px);background-size:5px 5px;pointer-events:none"></div>
+        <div style="position:relative">
+          <div style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#9AA09C">Now</div>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-top:10px">
+            <div style="font:700 52px/.82 'Roboto Mono',monospace;letter-spacing:-.03em;color:{{ ghostInk }}">{{ ghostRate }}%</div>
+            <div style="font:400 11px/1.35 Archivo,sans-serif;color:#9AA09C">{{ ghostFrac }}<br>closed applications</div>
+          </div>
+          <div style="height:14px;background:#2A2E31;border:1px solid #5B615F;margin-top:18px;display:flex;position:relative">
+            <div style="{{ ghostBarStyle }}"></div>
+            <div style="{{ baselineMarkStyle }}"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px">
+            <span style="font:400 9px/1 'Roboto Mono',monospace;letter-spacing:.1em;color:#9AA09C">0%</span>
+            <span style="font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.1em;color:#E0A32E">BASELINE 53.6%</span>
+            <span style="font:400 9px/1 'Roboto Mono',monospace;letter-spacing:.1em;color:#9AA09C">100%</span>
+          </div>
+          <div style="font:400 11px/1.55 Archivo,sans-serif;color:#9AA09C;margin-top:14px;max-width:44ch">Starting benchmark: 15 of 28 tracked applications went silent past 30 days. Ghosting is the dominant failure mode — everything here is aimed at it.</div>
+        </div>
+      </div>
+
+      <div style="border:2px solid var(--sd-ink,#16181A);background:var(--sd-panel,#F3F4F0)">
+        <div style="padding:13px 15px;border-bottom:2px solid var(--sd-ink,#16181A);display:flex;justify-content:space-between;align-items:center">
+          <span style="font:700 11px/1 'Roboto Mono',monospace;letter-spacing:.16em;text-transform:uppercase">Silent too long</span>
+          <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:var(--sd-burn,#A8451C)">{{ silentCount }} QUIET</span>
+        </div>
+        <sc-for list="{{ silent }}" as="s" hint-placeholder-count="3">
+          <div style="{{ s.rowStyle }}">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+              <div style="min-width:0">
+                <span style="font:700 13px/1.2 Archivo,sans-serif">{{ s.company }}</span>
+                <span style="font:400 12px/1.2 Archivo,sans-serif;color:var(--sd-soft,#5B615F)"> · {{ s.role }}</span>
+              </div>
+              <span style="{{ s.daysStyle }}">{{ s.days }}D</span>
+            </div>
+            <div style="height:9px;margin-top:9px;border:1px solid var(--sd-rule,#C6CAC2);background:{{ s.track }};position:relative;overflow:hidden">
+              <div style="{{ s.hatch }}"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap">
+              <span style="font:400 10px/1 'Roboto Mono',monospace;letter-spacing:.1em;color:var(--sd-soft,#5B615F)">{{ s.channel }}{{ s.flag }}</span>
+              <div style="display:flex;gap:5px">
+                <button style="border:1px solid var(--sd-rule,#C6CAC2);background:transparent;color:var(--sd-soft,#5B615F);font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:7px 8px;cursor:pointer">Copy final</button>
+                <button style="border:1px solid var(--sd-ink,#16181A);background:var(--sd-ink,#16181A);color:var(--sd-panel,#F3F4F0);font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:7px 8px;cursor:pointer">Confirm ghosted</button>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--sd-ink,#16181A);padding-bottom:7px">
+      <h2 style="font:700 17px/1 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:0">Board</h2>
+      <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F);white-space:nowrap">{{ sourcedTotal }} in play</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(18%,1fr));gap:12px;margin-top:16px">
+      <sc-for list="{{ board }}" as="c" hint-placeholder-count="5">
+        <div style="border:2px solid var(--sd-ink,#16181A);background:var(--sd-panel,#F3F4F0);display:flex;flex-direction:column">
+          <div style="background:{{ c.color }};padding:9px 11px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font:700 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:{{ c.ink }}">{{ c.label }}</span>
+            <span style="font:700 17px/1 'Roboto Mono',monospace;color:{{ c.ink }}">{{ c.count }}</span>
+          </div>
+          <div style="padding:11px;flex:1">
+            <div style="font:400 11px/1.4 Archivo,sans-serif;color:var(--sd-soft,#5B615F);min-height:31px">{{ c.hint }}</div>
+            <sc-for list="{{ c.items }}" as="i" hint-placeholder-count="3">
+              <div style="border-top:1px solid var(--sd-rule,#C6CAC2);padding:7px 0 0;margin-top:7px">
+                <div style="font:700 12px/1.2 Archivo,sans-serif">{{ i.company }}</div>
+                <div style="font:400 11px/1.25 Archivo,sans-serif;color:var(--sd-soft,#5B615F);margin-top:3px">{{ i.role }}</div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ c.more }}">
+              <div style="font:400 10px/1 'Roboto Mono',monospace;color:var(--sd-soft,#5B615F);margin-top:9px;letter-spacing:.08em">+{{ c.moreCount }} MORE</div>
+            </sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--sd-ink,#16181A);padding-bottom:7px">
+      <h2 style="font:700 17px/1 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:0">Conversion</h2>
+      <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">Stage to stage</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:12px;margin-top:16px">
+      <sc-for list="{{ conversions }}" as="c" hint-placeholder-count="4">
+        <div style="border:2px solid var(--sd-ink,#16181A);background:var(--sd-panel,#F3F4F0);padding:13px 14px 15px">
+          <div style="font:500 10px/1.3 'Roboto Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--sd-soft,#5B615F);min-height:26px">{{ c.label }}</div>
+          <div style="font:700 30px/.85 'Roboto Mono',monospace;letter-spacing:-.02em;margin-top:9px">{{ c.value }}%</div>
+          <div style="height:10px;border:1px solid var(--sd-rule,#C6CAC2);margin-top:13px;display:flex;background:var(--sd-ground,#E9EBE6)">
+            <div style="{{ c.barStyle }}"></div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ================= FOLLOW UP ================= -->
+<sc-if value="{{ isFollow }}" hint-placeholder-val="{{ true }}">
+<div style="padding-top:22px;display:flex;flex-direction:column;gap:20px">
+  <div style="font:400 12px/1.6 Archivo,sans-serif;color:var(--sd-soft,#5B615F);max-width:64ch">A warm touch is auto-queued two days after each application is submitted. Nothing is ever sent for you — these are prompts to act.</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border:2px solid var(--sd-ink,#16181A);background:var(--sd-panel,#F3F4F0)">
+    <sc-for list="{{ followStats }}" as="s" hint-placeholder-count="4">
+      <div style="{{ s.cellStyle }}">
+        <div style="font:500 10px/1.25 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">{{ s.label }}</div>
+        <div style="font:700 30px/.85 'Roboto Mono',monospace;color:{{ s.ink }};margin-top:11px">{{ s.value }}</div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <sc-for list="{{ followCards }}" as="f" hint-placeholder-count="5">
+      <div style="{{ f.cardStyle }}">
+        <div style="display:flex;align-items:stretch">
+          <div style="{{ f.spineStyle }}">
+            <span style="{{ f.spineTextStyle }}">{{ f.spineLabel }}</span>
+          </div>
+          <div style="flex:1;min-width:0;padding:14px 15px 15px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap">
+              <div style="min-width:0">
+                <span style="font:700 15px/1.2 Archivo,sans-serif">{{ f.company }}</span>
+                <span style="font:400 13px/1.2 Archivo,sans-serif;color:var(--sd-soft,#5B615F)"> · {{ f.role }}</span>
+              </div>
+              <span style="{{ f.toneStyle }}">{{ f.clockLabel }}</span>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:11px;margin-top:12px">
+              <svg viewBox="0 0 34 34" width="30" height="30" style="flex:none">
+                <circle cx="17" cy="17" r="15" fill="none" stroke="{{ f.reelRing }}" stroke-width="2"></circle>
+                <circle cx="17" cy="17" r="5.5" fill="none" stroke="{{ f.reelHub }}" stroke-width="2"></circle>
+                <g style="{{ f.reelSpin }}">
+                  <line x1="17" y1="5" x2="17" y2="11" stroke="{{ f.reelHub }}" stroke-width="2"></line>
+                  <line x1="29" y1="17" x2="23" y2="17" stroke="{{ f.reelHub }}" stroke-width="2"></line>
+                  <line x1="17" y1="29" x2="17" y2="23" stroke="{{ f.reelHub }}" stroke-width="2"></line>
+                  <line x1="5" y1="17" x2="11" y2="17" stroke="{{ f.reelHub }}" stroke-width="2"></line>
+                </g>
+              </svg>
+              <div style="flex:1;min-width:0">
+                <div style="height:13px;border:1px solid var(--sd-ink,#16181A);background:var(--sd-ground,#E9EBE6);position:relative;overflow:hidden">
+                  <div style="{{ f.fillStyle }}"></div>
+                  <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),rgba(22,24,26,.28) calc(10% - 1px) 10%)"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:6px">
+                  <span style="font:400 9px/1 'Roboto Mono',monospace;letter-spacing:.1em;color:var(--sd-soft,#5B615F)">LAST TOUCH {{ f.lastTouch }}</span>
+                  <span style="font:400 9px/1 'Roboto Mono',monospace;letter-spacing:.1em;color:var(--sd-soft,#5B615F)">{{ f.elapsed }}/30 D</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="border-top:1px solid var(--sd-rule,#C6CAC2);margin-top:14px;padding-top:11px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+              <span style="{{ f.warmStyle }}">Warm touch · {{ f.warmLabel }}</span>
+              <div style="display:flex;gap:5px;flex-wrap:wrap">
+                <button onClick="{{ f.toggleOpen }}" style="border:1px solid var(--sd-rule,#C6CAC2);background:transparent;color:var(--sd-soft,#5B615F);font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:8px 9px;cursor:pointer">{{ f.openLabel }}</button>
+                <button style="border:1px solid var(--sd-ink,#16181A);background:var(--sd-ink,#16181A);color:var(--sd-panel,#F3F4F0);font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:8px 9px;cursor:pointer">Log manually</button>
+                <button style="border:1px solid var(--sd-rule,#C6CAC2);background:transparent;color:var(--sd-soft,#5B615F);font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:8px 9px;cursor:pointer">Close</button>
+              </div>
+            </div>
+
+            <sc-if value="{{ f.open }}">
+              <div style="margin-top:11px;display:flex;flex-direction:column;gap:8px">
+                <sc-for list="{{ f.matches }}" as="m" hint-placeholder-count="2">
+                  <div style="border:1px solid var(--sd-rule,#C6CAC2);background:var(--sd-ground,#E9EBE6);padding:10px 11px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+                    <div style="min-width:0">
+                      <div style="display:flex;align-items:center;gap:8px">
+                        <span style="{{ m.gradeStyle }}">{{ m.grade }}</span>
+                        <a href="#" style="font:700 13px/1.2 Archivo,sans-serif;color:var(--sd-blueprint,#1F3D6B)">{{ m.name }}</a>
+                      </div>
+                      <div style="font:400 11px/1.3 Archivo,sans-serif;color:var(--sd-soft,#5B615F);margin-top:5px">{{ m.title }} · {{ m.rank }}</div>
+                    </div>
+                    <div style="display:flex;gap:5px;flex:none">
+                      <button style="border:1px solid var(--sd-rule,#C6CAC2);background:transparent;color:var(--sd-soft,#5B615F);font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:7px 8px;cursor:pointer">Copy draft</button>
+                      <button style="border:1px solid var(--sd-ink,#16181A);background:var(--sd-ink,#16181A);color:var(--sd-panel,#F3F4F0);font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:7px 8px;cursor:pointer">Sent</button>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--sd-ink,#16181A);padding-bottom:7px">
+      <h2 style="font:700 17px/1 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:0">Chase list</h2>
+      <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-burn,#A8451C)">{{ chaseCount }} waiting on me</span>
+    </div>
+    <div style="border:2px solid var(--sd-ink,#16181A);border-top:0;background:var(--sd-panel,#F3F4F0);margin-top:0">
+      <sc-for list="{{ chase }}" as="t" hint-placeholder-count="3">
+        <div style="border-bottom:1px solid var(--sd-rule,#C6CAC2);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
+          <div style="min-width:0;flex:1">
+            <a href="#" style="font:700 13px/1.2 Archivo,sans-serif;color:var(--sd-blueprint,#1F3D6B)">{{ t.name }}</a>
+            <div style="font:400 11px/1.4 Archivo,sans-serif;color:var(--sd-soft,#5B615F);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:56ch">{{ t.last }}</div>
+          </div>
+          <span style="font:400 10px/1 'Roboto Mono',monospace;letter-spacing:.1em;color:var(--sd-soft,#5B615F);flex:none">{{ t.date }} · {{ t.status }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ================= NETWORK ================= -->
+<sc-if value="{{ isNetwork }}" hint-placeholder-val="{{ true }}">
+<div style="padding-top:22px;display:flex;flex-direction:column;gap:20px">
+
+  <div>
+    <div style="background:var(--sd-ink,#16181A);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <span style="font:700 11px/1 'Roboto Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#fff">Response rate by opener</span>
+      <span style="font:400 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:#9AA09C">247 CONTACTS ON FILE</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));border:2px solid var(--sd-ink,#16181A);border-top:0;background:var(--sd-panel,#F3F4F0)">
+      <sc-for list="{{ rates }}" as="r" hint-placeholder-count="4">
+        <div style="{{ r.cellStyle }}">
+          <div style="font:500 10px/1.25 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">{{ r.label }}</div>
+          <div style="display:flex;align-items:baseline;gap:8px;margin-top:11px">
+            <div style="font:700 30px/.85 'Roboto Mono',monospace;color:{{ r.ink }}">{{ r.rate }}%</div>
+            <div style="font:400 10px/1 'Roboto Mono',monospace;color:var(--sd-soft,#5B615F)">{{ r.frac }}</div>
+          </div>
+          <div style="height:8px;border:1px solid var(--sd-rule,#C6CAC2);margin-top:12px;display:flex;background:var(--sd-ground,#E9EBE6)">
+            <div style="{{ r.barStyle }}"></div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+    <sc-for list="{{ chips }}" as="c" hint-placeholder-count="6">
+      <button onClick="{{ c.go }}" style="{{ c.style }}">{{ c.label }} <span style="opacity:.6">{{ c.count }}</span></button>
+    </sc-for>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:11px">
+    <sc-for list="{{ contacts }}" as="c" hint-placeholder-count="5">
+      <div style="{{ c.cardStyle }}">
+        <div style="display:flex;height:6px">
+          <div style="flex:1;background:{{ c.tierColor }}"></div>
+          <div style="width:34%;background:{{ c.statusColor }}"></div>
+        </div>
+        <div style="padding:13px 15px 14px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:9px;min-width:0;flex-wrap:wrap">
+              <span style="font:700 16px/1.15 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.02em;text-transform:uppercase">{{ c.company }}</span>
+              <span style="{{ c.tierStyle }}">{{ c.tierLabel }}</span>
+            </div>
+            <span style="{{ c.statusStyle }}">{{ c.status }}</span>
+          </div>
+          <div style="font:400 12px/1.4 Archivo,sans-serif;margin-top:8px">
+            <a href="#" style="color:var(--sd-blueprint,#1F3D6B);font-weight:700">{{ c.name }}</a>
+            <span style="color:var(--sd-soft,#5B615F)"> · {{ c.title }}</span>
+          </div>
+          <div style="font:400 11px/1.45 Archivo,sans-serif;color:var(--sd-soft,#5B615F);margin-top:5px;max-width:70ch">{{ c.why }} · connected {{ c.connected }}</div>
+          <div style="display:flex;gap:5px;margin-top:13px;flex-wrap:wrap">
+            <sc-for list="{{ c.actions }}" as="a" hint-placeholder-count="4">
+              <button style="{{ a.style }}">{{ a.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</sc-if>
+
+<!-- ================= APPLICATIONS ================= -->
+<sc-if value="{{ isApps }}" hint-placeholder-val="{{ true }}">
+<div style="padding-top:22px;display:flex;flex-direction:column;gap:16px">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      <sc-for list="{{ statusChips }}" as="s" hint-placeholder-count="5">
+        <button onClick="{{ s.go }}" style="{{ s.style }}">{{ s.label }} <span style="opacity:.6">{{ s.count }}</span></button>
+      </sc-for>
+    </div>
+    <div style="display:flex;gap:6px">
+      <button style="border:1px solid var(--sd-rule,#C6CAC2);background:transparent;color:var(--sd-soft,#5B615F);font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:9px 11px;cursor:pointer">Import CSV</button>
+      <button style="border:1px solid var(--sd-ink,#16181A);background:var(--sd-accent,#A8451C);color:#fff;font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:9px 11px;cursor:pointer">+ New</button>
+    </div>
+  </div>
+
+  <div style="border:2px solid var(--sd-ink,#16181A);background:var(--sd-panel,#F3F4F0);overflow-x:auto">
+    <div style="min-width:760px">
+      <div style="display:grid;grid-template-columns:8px 1.3fr 1.6fr 104px 92px 108px 92px;background:var(--sd-ink,#16181A);padding:0 12px">
+        <sc-for list="{{ tableHead }}" as="h" hint-placeholder-count="7">
+          <div style="font:700 9px/1 'Roboto Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#fff;padding:11px 8px 11px 0">{{ h }}</div>
+        </sc-for>
+      </div>
+      <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="10">
+        <div style="{{ r.rowStyle }}">
+          <div style="align-self:stretch;background:{{ r.color }}"></div>
+          <div style="font:700 13px/1.25 Archivo,sans-serif;padding:11px 8px 11px 10px">{{ r.company }}</div>
+          <div style="font:400 12px/1.3 Archivo,sans-serif;color:var(--sd-soft,#5B615F);padding:11px 8px 11px 0">{{ r.role }}</div>
+          <div style="padding:9px 8px 9px 0"><span style="{{ r.chip }}">{{ r.status }}</span></div>
+          <div style="font:400 11px/1 'Roboto Mono',monospace;color:var(--sd-soft,#5B615F);padding:12px 8px 12px 0">{{ r.date }}</div>
+          <div style="font:400 11px/1 'Roboto Mono',monospace;color:var(--sd-soft,#5B615F);padding:12px 8px 12px 0">{{ r.channel }}</div>
+          <div style="padding:11px 0"><span style="{{ r.touchStyle }}">{{ r.touch }}</span></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;font:400 9px/1 'Roboto Mono',monospace;letter-spacing:.1em;color:var(--sd-soft,#5B615F)">
+    <span>{{ tableCount }} ROWS · CSV UPSERT BY ID</span><span>SORT: DATE ↓</span>
+  </div>
+</div>
+</sc-if>
+
+<!-- ================= FEEDBACK ================= -->
+<sc-if value="{{ isFeedback }}" hint-placeholder-val="{{ true }}">
+<div style="padding-top:22px;display:flex;flex-direction:column;gap:26px">
+
+  <div style="border:2px solid var(--sd-ink,#16181A);background:var(--sd-ink,#16181A);position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;opacity:var(--sd-tex,.4);background-image:radial-gradient(#E9EBE6 .7px,transparent .8px);background-size:5px 5px;pointer-events:none"></div>
+    <div style="position:relative;padding:18px 19px 20px">
+      <div style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#9AA09C">Does the warm touch earn its place?</div>
+      <div style="display:flex;gap:26px;align-items:flex-end;margin-top:16px;flex-wrap:wrap">
+        <div>
+          <div style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:#9AA09C">WITH WARM TOUCH</div>
+          <div style="font:700 46px/.82 'Roboto Mono',monospace;color:var(--sd-live-l,#6FAE8B);margin-top:9px">{{ liftWith }}%</div>
+        </div>
+        <div style="font:700 26px/1 'Roboto Mono',monospace;color:#5B615F;padding-bottom:8px">vs</div>
+        <div>
+          <div style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:#9AA09C">WITHOUT</div>
+          <div style="font:700 46px/.82 'Roboto Mono',monospace;color:#9AA09C;margin-top:9px">{{ liftWithout }}%</div>
+        </div>
+        <div style="border-left:1px solid #5B615F;padding-left:24px;margin-left:6px">
+          <div style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:#9AA09C">LIFT</div>
+          <div style="font:700 46px/.82 'Roboto Mono',monospace;color:var(--sd-accent,#A8451C);margin-top:9px">+{{ lift }}</div>
+        </div>
+      </div>
+      <div style="font:400 11px/1.55 Archivo,sans-serif;color:#9AA09C;margin-top:16px;max-width:56ch">Judged by hand on closed applications: {{ verdictYes }} said the warm touch helped, {{ verdictNo }} said it didn't, {{ verdictUnclear }} unclear.</div>
+    </div>
+  </div>
+
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--sd-ink,#16181A);padding-bottom:7px">
+      <h2 style="font:700 17px/1 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:0">By channel</h2>
+      <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">Where the replies come from</span>
+    </div>
+    <div style="border:2px solid var(--sd-ink,#16181A);border-top:0;background:var(--sd-panel,#F3F4F0);overflow-x:auto">
+      <div style="min-width:600px">
+        <div style="display:grid;grid-template-columns:1.2fr 70px 90px 1fr 90px;background:var(--sd-ink,#16181A);padding:0 12px">
+          <sc-for list="{{ chHead }}" as="h" hint-placeholder-count="5">
+            <div style="font:700 9px/1 'Roboto Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#fff;padding:11px 8px 11px 0">{{ h }}</div>
+          </sc-for>
+        </div>
+        <sc-for list="{{ channels }}" as="c" hint-placeholder-count="4">
+          <div style="{{ c.rowStyle }}">
+            <div style="font:700 12px/1.2 Archivo,sans-serif;padding:12px 8px 12px 0">{{ c.channel }}</div>
+            <div style="font:400 12px/1 'Roboto Mono',monospace;padding:12px 8px 12px 0;color:var(--sd-soft,#5B615F)">{{ c.sent }}</div>
+            <div style="font:700 12px/1 'Roboto Mono',monospace;padding:12px 8px 12px 0;color:{{ c.rateInk }}">{{ c.rate }}%</div>
+            <div style="padding:13px 12px 13px 0"><div style="height:9px;border:1px solid var(--sd-rule,#C6CAC2);display:flex;background:var(--sd-ground,#E9EBE6)"><div style="{{ c.barStyle }}"></div></div></div>
+            <div style="font:400 12px/1 'Roboto Mono',monospace;padding:12px 0;color:var(--sd-burn,#A8451C)">{{ c.ghost }}%</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--sd-ink,#16181A);padding-bottom:7px">
+        <h2 style="font:700 17px/1 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:0">How far it got</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+        <sc-for list="{{ stagesReached }}" as="s" hint-placeholder-count="6">
+          <div style="display:flex;align-items:center;gap:11px">
+            <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--sd-soft,#5B615F);width:104px;flex:none">{{ s.stage }}</span>
+            <div style="flex:1;height:16px;border:1px solid var(--sd-rule,#C6CAC2);display:flex;background:var(--sd-panel,#F3F4F0)">
+              <div style="{{ s.barStyle }}"></div>
+            </div>
+            <span style="font:700 11px/1 'Roboto Mono',monospace;width:22px;text-align:right;flex:none">{{ s.count }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--sd-ink,#16181A);padding-bottom:7px">
+        <h2 style="font:700 17px/1 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:0">How it ended</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+        <sc-for list="{{ closeTypes }}" as="s" hint-placeholder-count="6">
+          <div style="display:flex;align-items:center;gap:11px">
+            <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--sd-soft,#5B615F);width:104px;flex:none">{{ s.type }}</span>
+            <div style="flex:1;height:16px;border:1px solid var(--sd-rule,#C6CAC2);display:flex;background:var(--sd-panel,#F3F4F0)">
+              <div style="{{ s.barStyle }}"></div>
+            </div>
+            <span style="font:700 11px/1 'Roboto Mono',monospace;width:22px;text-align:right;flex:none">{{ s.count }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--sd-ink,#16181A);padding-bottom:7px">
+      <h2 style="font:700 17px/1 'Archivo Narrow',Archivo,sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:0">Lessons</h2>
+      <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">One line per closed role</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0;margin-top:0">
+      <sc-for list="{{ lessons }}" as="l" hint-placeholder-count="3">
+        <div style="border:2px solid var(--sd-ink,#16181A);border-top:0;background:var(--sd-panel,#F3F4F0);padding:14px 15px;display:flex;gap:15px;align-items:flex-start;flex-wrap:wrap">
+          <div style="width:114px;flex:none">
+            <div style="font:400 10px/1 'Roboto Mono',monospace;letter-spacing:.1em;color:var(--sd-soft,#5B615F)">{{ l.date }}</div>
+            <div style="font:700 12px/1.2 Archivo,sans-serif;margin-top:6px">{{ l.company }}</div>
+            <div style="{{ l.chip }}">{{ l.closeType }}</div>
+          </div>
+          <div style="flex:1;min-width:200px;font:400 13px/1.55 Archivo,sans-serif;text-wrap:pretty">{{ l.lesson }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ================= SETTINGS ================= -->
+<sc-if value="{{ isSettings }}" hint-placeholder-val="{{ true }}">
+<div style="padding-top:22px;display:flex;flex-direction:column;gap:18px;max-width:620px">
+  <sc-for list="{{ settings }}" as="s" hint-placeholder-count="3">
+    <div style="border:2px solid var(--sd-ink,#16181A);background:var(--sd-panel,#F3F4F0)">
+      <div style="display:flex;height:5px"><div style="flex:1;background:{{ s.bar }}"></div></div>
+      <div style="padding:15px 16px 17px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap">
+        <div style="min-width:0;flex:1">
+          <div style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">{{ s.label }}</div>
+          <div style="font:400 12px/1.5 Archivo,sans-serif;color:var(--sd-soft,#5B615F);margin-top:8px;max-width:44ch">{{ s.hint }}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:9px;flex:none">
+          <input type="text" value="{{ s.value }}" style="width:66px;border:1px solid var(--sd-ink,#16181A);background:var(--sd-ground,#E9EBE6);color:var(--sd-ink,#16181A);font:700 20px/1 'Roboto Mono',monospace;padding:9px 10px;text-align:right;outline:none">
+          <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--sd-soft,#5B615F);width:44px">{{ s.unit }}</span>
+        </div>
+      </div>
+    </div>
+  </sc-for>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;padding-top:4px">
+    <button style="border:1px solid var(--sd-ink,#16181A);background:var(--sd-ink,#16181A);color:var(--sd-panel,#F3F4F0);font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:11px 14px;cursor:pointer">Save settings</button>
+    <button style="border:1px solid var(--sd-burn,#A8451C);background:transparent;color:var(--sd-burn,#A8451C);font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:11px 14px;cursor:pointer">Wipe contact data</button>
+  </div>
+  <div style="border:1px dashed var(--sd-rule,#C6CAC2);padding:14px 15px;font:400 11px/1.6 Archivo,sans-serif;color:var(--sd-soft,#5B615F);max-width:60ch">Snapshots of the response rate are recorded when you ask for them, so improvement stays legible over months rather than days.</div>
+</div>
+</sc-if>
+
+<div style="margin-top:40px;border-top:2px solid var(--sd-ink,#16181A);padding-top:13px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap">
+  <span style="font:400 9px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:var(--sd-soft,#5B615F)">SEARCH DESK · PRIVATE CONSOLE · CAPE TOWN</span>
+  <span style="font:400 9px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:var(--sd-soft,#5B615F)">APPLY → TRACK → FOLLOW UP → CLOSE → FEEDBACK</span>
+</div>
+</div>
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1120,&quot;height&quot;:900},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Light&quot;,&quot;options&quot;:[&quot;Light&quot;,&quot;Dark&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Look&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#A8451C&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#A8451C&quot;,&quot;#D6301B&quot;,&quot;#1F3D6B&quot;,&quot;#E0A32E&quot;],&quot;section&quot;:&quot;Look&quot;},&quot;retro&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Bold&quot;,&quot;options&quot;:[&quot;Full&quot;,&quot;Bold&quot;,&quot;Subtle&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Look&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Comfortable&quot;,&quot;options&quot;:[&quot;Comfortable&quot;,&quot;Compact&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Look&quot;}}">
+const TODAY = new Date('2026-08-13T00:00:00');
+const D = iso => iso ? Math.floor((TODAY - new Date(iso + 'T00:00:00')) / 86400000) : null;
+const SHORT = iso => iso ? iso.slice(5).replace('-', '·') : '—';
+
+const APPS = [
+  { id:'a1', company:'Richemont', role:'Commercial Manager, SA & Sub-Sahara', status:'Interview', date:'2026-07-14', last_touch:'2026-08-08', warm:true, warm_due:'2026-07-16', channel:'Referral', close:null, stage:null, lesson:'' },
+  { id:'a2', company:'Luxottica', role:'Head of Retail Operations', status:'Responded', date:'2026-07-28', last_touch:'2026-08-06', warm:true, warm_due:'2026-07-30', channel:'Direct email', close:null, stage:null, lesson:'' },
+  { id:'a3', company:'The Foschini Group', role:'Head of Commercial, Premium', status:'Applied', date:'2026-07-31', last_touch:'2026-07-31', warm:false, warm_due:'2026-08-02', channel:'Company ATS', close:null, stage:null, lesson:'' },
+  { id:'a4', company:'Woolworths', role:'Senior Manager, Merchandise Planning', status:'Applied', date:'2026-06-22', last_touch:'2026-06-22', warm:false, warm_due:'2026-06-24', channel:'Company ATS', close:null, stage:null, lesson:'' },
+  { id:'a5', company:'Kering', role:'Retail Performance Lead, EMEA', status:'Applied', date:'2026-07-20', last_touch:'2026-08-01', warm:true, warm_due:'2026-07-22', channel:'LinkedIn', close:null, stage:null, lesson:'' },
+  { id:'a6', company:'Superbalist', role:'Head of Commercial', status:'Offer', date:'2026-06-30', last_touch:'2026-08-11', warm:true, warm_due:'2026-07-02', channel:'Referral', close:null, stage:null, lesson:'' },
+  { id:'a7', company:'Mr Price Group', role:'General Manager, Commercial', status:'Rejected', date:'2026-05-19', last_touch:'2026-07-04', warm:true, warm_due:'2026-05-21', channel:'Recruiter', close:'Personal rejection', stage:'Final round', lesson:'Lost on category depth, not on the operating story. Lead with the margin turnaround numbers next time — they came out on slide nine and should have been slide one.' },
+  { id:'a8', company:'Puma South Africa', role:'Head of Retail', status:'Rejected', date:'2026-05-02', last_touch:'2026-05-02', warm:false, warm_due:'2026-05-04', channel:'Company ATS', close:'Ghosted', stage:'No response', lesson:'ATS with no human contact and no warm touch queued. This is the shape of every application that dies — do not send another one blind.' },
+  { id:'a9', company:'Cape Union Mart', role:'Commercial Director', status:'Rejected', date:'2026-06-08', last_touch:'2026-06-27', warm:true, warm_due:'2026-06-10', channel:'Direct email', close:'Auto rejection', stage:'Screen', lesson:'Warm touch landed but the screen was a salary filter. Ask the band in the first ten minutes.' },
+  { id:'a10', company:'Dior Couture SA', role:'Boutique Director, V&A', status:'Evaluated', date:null, last_touch:null, warm:false, warm_due:null, channel:'Unknown', close:null, stage:null, lesson:'' },
+  { id:'a11', company:'Inditex SA', role:'Country Commercial Lead', status:'Evaluated', date:null, last_touch:null, warm:false, warm_due:null, channel:'Unknown', close:null, stage:null, lesson:'' },
+  { id:'a12', company:'Truworths', role:'Divisional Merchandise Head', status:'Discarded', date:'2026-06-15', last_touch:'2026-06-15', warm:false, warm_due:null, channel:'Recruiter', close:'Withdrew', stage:'Screen', lesson:'Two-hour commute each way. Should have checked the site location before applying.' }
+];
+
+const CONTACTS = [
+  { id:'c1', tier:'A', name:'Nadia Petersen', title:'Group Commercial Director', company:'The Foschini Group', status:'New', why:'Owns the premium division this role reports into', connected:'2025-11-04' },
+  { id:'c2', tier:'A', name:'Rowan Meyer', title:'Head of Talent, Luxury', company:'Richemont', status:'Replied', why:'Ran my first-round screen and offered to keep in touch', connected:'2026-02-18' },
+  { id:'c3', tier:'B', name:'Thandi Mokoena', title:'Retail Operations Manager', company:'Luxottica', status:'Reached out', why:'Peer in the same function, met at the Sandton trade day', connected:'2026-01-22' },
+  { id:'c4', tier:'A', name:'Gideon Louw', title:'Managing Director, Southern Africa', company:'Kering', status:'Drafted', why:'Two mutual contacts from the Woolworths years', connected:'2025-09-30' },
+  { id:'c5', tier:'B', name:'Aisha Kader', title:'Head of People', company:'Superbalist', status:'Meeting', why:'Handling the offer conversation directly', connected:'2026-06-29' },
+  { id:'c6', tier:'C', name:'Pieter van Zyl', title:'Senior Buyer, Menswear', company:'Woolworths', status:'New', why:'Inside the planning team, can name the hiring manager', connected:'2024-08-11' },
+  { id:'c7', tier:'B', name:'Lerato Dube', title:'Director of Stores', company:'Dior Couture SA', status:'Skipped', why:'Warm but the boutique role is a step sideways', connected:'2025-05-17' },
+  { id:'c8', tier:'C', name:'Marcus Adriaanse', title:'Regional Sales Manager', company:'Inditex SA', status:'Not a fit', why:'Different function, no line of sight to commercial', connected:'2023-12-02' }
+];
+
+const THREADS = [
+  { name:'Rowan Meyer', ball:'Me', last:'Sent you the two names we discussed — worth a call?', date:'2026-08-09', status:'Replied' },
+  { name:'Thandi Mokoena', ball:'Me', last:'Happy to intro you to Marlise, she runs ops planning.', date:'2026-08-05', status:'Warm touch sent' },
+  { name:'Aisha Kader', ball:'Me', last:'Can you confirm the start date range by Friday?', date:'2026-08-11', status:'Meeting' },
+  { name:'Gideon Louw', ball:'Them', last:'', date:'2026-08-02', status:'Warm touch sent' },
+  { name:'Nadia Petersen', ball:'Them', last:'', date:null, status:'New' },
+  { name:'Pieter van Zyl', ball:'Them', last:'Let me check who owns the req.', date:'2026-07-28', status:'Reached out' }
+];
+
+const STAGE_COLORS = { Sourced:'#9AA09C', Applied:'#1F3D6B', 'Warm touch':'#E0A32E', 'In process':'#2F6B4F', Closed:'#16181A' };
+const STAGE_INK = { Sourced:'#16181A', Applied:'#ffffff', 'Warm touch':'#16181A', 'In process':'#ffffff', Closed:'#ffffff' };
+const STAGE_HINT = {
+  Sourced:'Found, not yet applied', Applied:'Submitted, no warm touch yet',
+  'Warm touch':'Application in + insider contacted', 'In process':'They responded / interviewing',
+  Closed:'Offer, or rejected with feedback'
+};
+const STATUS_COLORS = {
+  Evaluated:'#9AA09C', Applied:'#1F3D6B', Responded:'#2F6B4F', Interview:'#7A3B62',
+  Offer:'#2F6B4F', Rejected:'#A8451C', Discarded:'#5B615F', SKIP:'#C6CAC2'
+};
+const TIER_COLORS = { A:'#A8451C', B:'#1F3D6B', C:'#5B615F' };
+const TIER_GRADE = { A:'SHG', B:'HG', C:'STD' };
+
+class Component extends DCLogic {
+  state = { view:'Pipeline', dark:null, chip:'To work', statusChip:'All', open:{} };
+
+  isDark() { return this.state.dark === null ? (this.props.theme || 'Light') === 'Dark' : this.state.dark; }
+  acc() { return this.props.accent || '#A8451C'; }
+
+  stageOf(a) {
+    if (['Offer','Rejected','Discarded'].includes(a.status)) return 'Closed';
+    if (['Responded','Interview'].includes(a.status)) return 'In process';
+    if (a.status === 'Applied') return a.warm ? 'Warm touch' : 'Applied';
+    return 'Sourced';
+  }
+
+  clock(a) {
+    const elapsed = D(a.last_touch || a.date);
+    if (elapsed === null) return { elapsed:0, remaining:30, pct:0, tone:'live', label:'not sent' };
+    const remaining = 30 - elapsed;
+    const pct = Math.max(0, Math.min(100, (elapsed / 30) * 100));
+    if (remaining < 0) return { elapsed, remaining, pct:100, tone:'cold', label:(-remaining) + 'd cold' };
+    if (remaining <= 7) return { elapsed, remaining, pct, tone:'burn', label:remaining + 'd left' };
+    return { elapsed, remaining, pct, tone:'live', label:remaining + 'd left' };
+  }
+
+  chipStyle(color, ink) {
+    return 'display:inline-block;background:' + color + ';color:' + (ink || '#fff') +
+      ";font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.12em;text-transform:uppercase;padding:5px 6px;white-space:nowrap";
+  }
+
+  btn(kind) {
+    const base = "font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:8px 9px;cursor:pointer;border:1px solid ";
+    if (kind === 'solid') return base + 'var(--sd-ink,#16181A);background:var(--sd-ink,#16181A);color:var(--sd-panel,#F3F4F0)';
+    if (kind === 'accent') return base + 'var(--sd-ink,#16181A);background:' + this.acc() + ';color:#fff';
+    return base + 'var(--sd-rule,#C6CAC2);background:transparent;color:var(--sd-soft,#5B615F)';
+  }
+
+  renderVals() {
+    const acc = this.acc();
+    const dark = this.isDark();
+    const retro = this.props.retro || 'Bold';
+    const dense = (this.props.density || 'Comfortable') === 'Compact';
+    const pad = dense ? '11px 12px 13px' : '15px 15px 17px';
+
+    const vars = dark ? {
+      '--sd-ground':'#16181A', '--sd-panel':'#1E2124', '--sd-ink':'#E9EBE6', '--sd-soft':'#9AA09C',
+      '--sd-rule':'#333A38', '--sd-blueprint':'#7FA0D4', '--sd-live':'#6FAE8B', '--sd-burn':'#D97A4E',
+      '--sd-live-l':'#6FAE8B', '--sd-accent':acc,
+      '--sd-tex': retro === 'Full' ? .8 : retro === 'Bold' ? .4 : .12,
+      '--sd-scan': retro === 'Full' ? .8 : retro === 'Bold' ? .3 : 0
+    } : {
+      '--sd-ground':'#E9EBE6', '--sd-panel':'#F3F4F0', '--sd-ink':'#16181A', '--sd-soft':'#5B615F',
+      '--sd-rule':'#C6CAC2', '--sd-blueprint':'#1F3D6B', '--sd-live':'#2F6B4F', '--sd-burn':'#A8451C',
+      '--sd-live-l':'#6FAE8B', '--sd-accent':acc,
+      '--sd-tex': retro === 'Full' ? .8 : retro === 'Bold' ? .4 : .12,
+      '--sd-scan': retro === 'Full' ? .8 : retro === 'Bold' ? .3 : 0
+    };
+    const LIVE = dark ? '#6FAE8B' : '#2F6B4F';
+    const BURN = dark ? '#D97A4E' : '#A8451C';
+    const INK = dark ? '#E9EBE6' : '#16181A';
+    const SOFT = dark ? '#9AA09C' : '#5B615F';
+    const RULE = dark ? '#333A38' : '#C6CAC2';
+    const PANEL = dark ? '#1E2124' : '#F3F4F0';
+
+    const view = this.state.view;
+    const VIEWS = ['Pipeline','Applications','Follow up','Network','Feedback','Settings'];
+    const nav = VIEWS.map(v => ({
+      label: v,
+      style: 'flex:none;border:0;border-bottom:3px solid ' + (view === v ? acc : 'transparent') +
+        ';background:' + (view === v ? 'rgba(255,255,255,.08)' : 'transparent') +
+        ';color:' + (view === v ? '#fff' : '#9AA09C') +
+        ";font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:13px 11px 12px;cursor:pointer;white-space:nowrap",
+      go: () => this.setState({ view: v })
+    }));
+
+    const live = APPS.filter(a => ['Applied','Responded','Interview','Offer'].includes(a.status));
+    const closed = APPS.filter(a => ['Offer','Rejected','Discarded'].includes(a.status));
+    const ghosted = closed.filter(a => a.close === 'Ghosted');
+    const sent = APPS.filter(a => !['Evaluated','SKIP'].includes(a.status));
+    const responded = APPS.filter(a => ['Responded','Interview','Offer','Rejected'].includes(a.status));
+    const rate = Math.round((responded.length / sent.length) * 100);
+    const ghostRate = Math.round((ghosted.length / closed.length) * 100);
+    const silentQ = APPS.filter(a => a.status === 'Applied' && (D(a.last_touch || a.date) || 0) >= 30)
+      .sort((x, y) => (D(y.last_touch || y.date) || 0) - (D(x.last_touch || x.date) || 0));
+    const warmContacts = CONTACTS.filter(c => ['Replied','Meeting'].includes(c.status)).length;
+    const cold = live.filter(a => this.clock(a).tone === 'cold').length;
+    const thisWeek = APPS.filter(a => { const d = D(a.date); return d !== null && d <= 7 && !['Evaluated','SKIP'].includes(a.status); }).length;
+    const weeklyTarget = 5;
+    const thin = thisWeek < weeklyTarget;
+    const sourced = APPS.filter(a => a.status === 'Evaluated').length;
+
+    const board = ['Sourced','Applied','Warm touch','In process','Closed'].map(s => {
+      const items = APPS.filter(a => a.status !== 'SKIP' && this.stageOf(a) === s);
+      return {
+        label:s, color:STAGE_COLORS[s], ink:STAGE_INK[s], count:items.length, hint:STAGE_HINT[s],
+        items: items.slice(0, 3), more: items.length > 3, moreCount: items.length - 3
+      };
+    });
+
+    const reached = {
+      sourced: APPS.filter(a => a.status !== 'SKIP').length,
+      applied: sent.length,
+      warm: sent.filter(a => a.warm).length,
+      inProcess: APPS.filter(a => ['Responded','Interview','Offer'].includes(a.status) ||
+        (['Rejected','Discarded'].includes(a.status) && a.stage && a.stage !== 'No response')).length,
+      closed: closed.length
+    };
+    const pctOf = (n, d) => d === 0 ? 0 : Math.min(100, Math.round((n / d) * 100));
+    const conversions = [
+      ['Sourced → Applied', pctOf(reached.applied, reached.sourced)],
+      ['Applied → Warm touch', pctOf(reached.warm, reached.applied)],
+      ['Applied → In process', pctOf(reached.inProcess, reached.applied)],
+      ['In process → Closed', pctOf(reached.closed, reached.inProcess)]
+    ].map((c, i) => ({
+      label: c[0], value: c[1],
+      barStyle: 'width:' + c[1] + '%;background:' + ['#9AA09C','#E0A32E','#2F6B4F','#1F3D6B'][i]
+    }));
+
+    const followList = live.slice().sort((a, b) => {
+      const dueA = !a.warm ? 1 : 0, dueB = !b.warm ? 1 : 0;
+      return dueB - dueA || this.clock(b).elapsed - this.clock(a).elapsed;
+    });
+    const dueNow = live.filter(a => !a.warm).length;
+    const chaseThreads = THREADS.filter(t => t.ball === 'Me');
+
+    const rankLabel = c => {
+      const t = c.title.toLowerCase();
+      if (/head of|director|chief|managing/.test(t)) return 'Likely hiring manager';
+      if (/talent|people|hr/.test(t)) return 'HR / Talent';
+      return 'Same function';
+    };
+
+    const followCards = followList.map(a => {
+      const c = this.clock(a);
+      const tone = c.tone === 'cold' ? RULE : c.tone === 'burn' ? BURN : LIVE;
+      const matches = CONTACTS.filter(x => x.company === a.company);
+      const isOpen = !!this.state.open[a.id];
+      const overdue = a.warm_due ? D(a.warm_due) : null;
+      const warmLabel = a.warm ? 'done ' + SHORT(a.last_touch)
+        : overdue === null ? 'not queued'
+        : overdue > 0 ? 'overdue ' + overdue + 'd'
+        : overdue === 0 ? 'due today' : 'due in ' + (-overdue) + 'd';
+      return {
+        company:a.company, role:a.role, clockLabel:c.label, elapsed:String(c.elapsed),
+        lastTouch: SHORT(a.last_touch || a.date),
+        cardStyle:'border:2px solid ' + (!a.warm ? BURN : INK) + ';background:' + PANEL,
+        spineStyle:'width:34px;flex:none;background:' + STATUS_COLORS[a.status] + ';display:flex;align-items:center;justify-content:center',
+        spineTextStyle:"writing-mode:vertical-rl;transform:rotate(180deg);font:700 9px/1 'Roboto Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:" +
+          (a.status === 'Evaluated' ? '#16181A' : '#fff'),
+        spineLabel:a.status,
+        toneStyle:"font:700 11px/1 'Roboto Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:" + tone,
+        fillStyle:'width:' + c.pct + '%;background:' + tone +
+          (c.tone === 'cold' ? ';background-image:repeating-linear-gradient(115deg,rgba(22,24,26,.35) 0 4px,transparent 4px 9px)' : ''),
+        reelRing: RULE, reelHub: tone,
+        reelSpin: 'transform-origin:17px 17px' + (c.tone === 'cold' ? '' : ';animation:sdreel 4.5s linear infinite'),
+        warmStyle:"font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:" + (!a.warm ? BURN : SOFT),
+        warmLabel,
+        openLabel: isOpen ? 'Hide' : matches.length + (matches.length === 1 ? ' contact' : ' contacts'),
+        open: isOpen,
+        toggleOpen: () => this.setState(s => ({ open: Object.assign({}, s.open, { [a.id]: !s.open[a.id] }) })),
+        matches: matches.map(m => ({
+          name:m.name, title:m.title, rank:rankLabel(m), grade:TIER_GRADE[m.tier],
+          gradeStyle:'border:1px solid ' + TIER_COLORS[m.tier] + ';color:' + TIER_COLORS[m.tier] +
+            ";font:700 8px/1 'Roboto Mono',monospace;letter-spacing:.12em;padding:3px 4px"
+        }))
+      };
+    });
+
+    const chipDefs = [
+      ['To work', CONTACTS.filter(c => ['New','Drafted'].includes(c.status)).length],
+      ['Tier A', CONTACTS.filter(c => c.tier === 'A').length],
+      ['Tier B', CONTACTS.filter(c => c.tier === 'B').length],
+      ['Tier C', CONTACTS.filter(c => c.tier === 'C').length],
+      ['Actioned', CONTACTS.filter(c => !['New'].includes(c.status)).length],
+      ['All', CONTACTS.length]
+    ];
+    const chipSel = this.state.chip;
+    const chips = chipDefs.map(c => ({
+      label:c[0].toUpperCase(), count:c[1],
+      style:'border:1px solid ' + (chipSel === c[0] ? INK : RULE) + ';background:' + (chipSel === c[0] ? INK : 'transparent') +
+        ';color:' + (chipSel === c[0] ? PANEL : SOFT) +
+        ";font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:9px 11px;cursor:pointer",
+      go: () => this.setState({ chip: c[0] })
+    }));
+    const contactList = CONTACTS.filter(c => {
+      if (chipSel === 'All') return true;
+      if (chipSel === 'To work') return ['New','Drafted'].includes(c.status);
+      if (chipSel === 'Actioned') return c.status !== 'New';
+      return c.tier === chipSel.slice(-1);
+    });
+    const settled = c => !['New','Drafted'].includes(c.status);
+    const contacts = contactList.map(c => ({
+      company:c.company, name:c.name, title:c.title, why:c.why, connected:SHORT(c.connected),
+      status:c.status.toUpperCase(), tierLabel:'TIER ' + c.tier + ' · ' + TIER_GRADE[c.tier],
+      tierColor:TIER_COLORS[c.tier],
+      statusColor: c.status === 'Replied' || c.status === 'Meeting' ? LIVE : c.status === 'New' ? RULE : c.status === 'Not a fit' ? BURN : '#E0A32E',
+      cardStyle:'border:2px solid ' + INK + ';background:' + PANEL + (settled(c) ? ';opacity:.62' : ''),
+      tierStyle:'border:1px solid ' + TIER_COLORS[c.tier] + ';color:' + TIER_COLORS[c.tier] +
+        ";font:700 9px/1 'Roboto Mono',monospace;letter-spacing:.12em;padding:4px 5px",
+      statusStyle:"font:700 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;color:" + (settled(c) ? SOFT : INK),
+      actions:[
+        { label:'Draft message', style:this.btn('accent') },
+        { label:'Mark reached out', style:this.btn('solid') },
+        { label:'Skip for later', style:this.btn('outline') },
+        { label:'Not a fit', style:this.btn('outline') }
+      ]
+    }));
+
+    const rateBuckets = [
+      ['Overall', 22, 9], ['Template opener', 14, 3], ['Custom opener', 8, 6], ['Warm touch', 6, 5]
+    ].map((b, i) => ({
+      label:b[0], rate:pctOf(b[2], b[1]), frac:b[2] + '/' + b[1],
+      ink: i === 0 ? INK : pctOf(b[2], b[1]) >= 50 ? LIVE : BURN,
+      cellStyle:'padding:' + pad + ';border-right:1px solid ' + RULE,
+      barStyle:'width:' + pctOf(b[2], b[1]) + '%;background:' + [INK, BURN, '#1F3D6B', LIVE][i]
+    }));
+
+    const statusChipDefs = ['All','Applied','Responded','Interview','Rejected','Evaluated']
+      .map(s => [s, s === 'All' ? APPS.length : APPS.filter(a => a.status === s).length]);
+    const statusSel = this.state.statusChip;
+    const statusChips = statusChipDefs.map(c => ({
+      label:c[0].toUpperCase(), count:c[1],
+      style:'border:1px solid ' + (statusSel === c[0] ? INK : RULE) + ';background:' + (statusSel === c[0] ? INK : 'transparent') +
+        ';color:' + (statusSel === c[0] ? PANEL : SOFT) +
+        ";font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:9px 10px;cursor:pointer",
+      go: () => this.setState({ statusChip: c[0] })
+    }));
+    const tableRows = APPS.filter(a => statusSel === 'All' || a.status === statusSel).map((a, i) => {
+      const c = this.clock(a);
+      return {
+        company:a.company, role:a.role, status:a.status.toUpperCase(), date:SHORT(a.date),
+        channel:a.channel.toUpperCase(), color:STATUS_COLORS[a.status],
+        chip:this.chipStyle(STATUS_COLORS[a.status], ['Evaluated','SKIP'].includes(a.status) ? '#16181A' : '#fff'),
+        touch: a.warm ? 'WARM ✓' : c.label.toUpperCase(),
+        touchStyle:"font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.12em;text-transform:uppercase;padding:5px 6px;white-space:nowrap;border:1px solid " +
+          (a.warm ? LIVE : c.tone === 'cold' ? RULE : BURN) + ';color:' + (a.warm ? LIVE : c.tone === 'cold' ? SOFT : BURN),
+        rowStyle:'display:grid;grid-template-columns:8px 1.3fr 1.6fr 104px 92px 108px 92px;padding:0 12px 0 0;align-items:center;cursor:pointer;border-bottom:1px solid ' +
+          RULE + ';background:' + (i % 2 ? (dark ? '#22262A' : '#EDEEE9') : PANEL)
+      };
+    });
+
+    const withWarm = sent.filter(a => a.warm);
+    const withoutWarm = sent.filter(a => !a.warm);
+    const respondedTo = a => ['Responded','Interview','Offer'].includes(a.status) || ['Personal rejection','Auto rejection'].includes(a.close);
+    const rw = pctOf(withWarm.filter(respondedTo).length, withWarm.length);
+    const ro = pctOf(withoutWarm.filter(respondedTo).length, withoutWarm.length);
+
+    const channels = ['Referral','Direct email','LinkedIn','Company ATS','Recruiter'].map(ch => {
+      const set = sent.filter(a => a.channel === ch);
+      if (set.length === 0) return null;
+      const cl = set.filter(a => ['Offer','Rejected','Discarded'].includes(a.status));
+      const r = pctOf(set.filter(respondedTo).length, set.length);
+      return {
+        channel:ch, sent:set.length, rate:r, rateInk: r >= 50 ? LIVE : r === 0 ? BURN : INK,
+        ghost: pctOf(cl.filter(a => a.close === 'Ghosted').length, cl.length),
+        barStyle:'width:' + r + '%;background:' + (r >= 50 ? LIVE : r === 0 ? BURN : '#1F3D6B'),
+        rowStyle:'display:grid;grid-template-columns:1.2fr 70px 90px 1fr 90px;padding:0 12px;align-items:center;border-bottom:1px solid ' + RULE
+      };
+    }).filter(Boolean);
+
+    const closedStaged = closed.filter(a => a.stage);
+    const stagesReached = ['No response','Screen','First round','Assessment','Final round','Offer'].map(s => {
+      const n = closedStaged.filter(a => a.stage === s).length;
+      return { stage:s, count:n, barStyle:'width:' + pctOf(n, Math.max(1, closedStaged.length)) + '%;background:' + (s === 'No response' ? BURN : s === 'Offer' ? LIVE : '#1F3D6B') };
+    });
+    const closedTyped = closed.filter(a => a.close);
+    const closeTypes = ['Personal rejection','Auto rejection','Ghosted','Withdrew','Offer','Role pulled'].map(t => {
+      const n = closedTyped.filter(a => a.close === t).length;
+      return { type:t, count:n, barStyle:'width:' + pctOf(n, Math.max(1, closedTyped.length)) + '%;background:' + (t === 'Ghosted' ? BURN : t === 'Personal rejection' ? LIVE : '#9AA09C') };
+    });
+
+    const lessons = APPS.filter(a => a.lesson).map(a => ({
+      company:a.company, lesson:a.lesson, date:SHORT(a.last_touch), closeType:(a.close || '').toUpperCase(),
+      chip:"display:inline-block;margin-top:7px;font:500 8px/1 'Roboto Mono',monospace;letter-spacing:.12em;padding:4px 5px;border:1px solid " +
+        (a.close === 'Ghosted' ? BURN : SOFT) + ';color:' + (a.close === 'Ghosted' ? BURN : SOFT)
+    }));
+
+    const titles = {
+      Pipeline:['Career ops · apply → track → follow up → close', 'Pipeline'],
+      Applications:['Every row, every channel', 'Applications'],
+      'Follow up':['The 30-day touch window', 'Follow up'],
+      Network:['247 contacts · tiered A / B / C', 'Network'],
+      Feedback:['What the data says to change', 'Feedback'],
+      Settings:['Targets and thresholds', 'Settings']
+    };
+
+    return {
+      vars, nav,
+      themeLabel: dark ? 'Light' : 'Dark',
+      toggleTheme: () => this.setState({ dark: !dark }),
+      eyebrow: titles[view][0], title: titles[view][1],
+      counter: 'REC · ' + String(live.length).padStart(2, '0') + ' LIVE · ' + String(cold).padStart(2, '0') + ' COLD',
+      isPipeline: view === 'Pipeline', isApps: view === 'Applications', isFollow: view === 'Follow up',
+      isNetwork: view === 'Network', isFeedback: view === 'Feedback', isSettings: view === 'Settings',
+
+      healthStyle:'border:2px solid ' + INK + ';background:' + (thin ? BURN : LIVE) + ';padding:' +
+        (dense ? '15px 16px' : '19px 20px 21px') + ';position:relative;overflow:hidden',
+      healthLine: (thin ? 'Top of funnel is thin — ' : 'On pace — ') + thisWeek + ' of ' + weeklyTarget + ' applications in the last 7 days',
+      sourcedCount: String(sourced),
+      weekTicks: [0,1,2,3,4].map(i => 'width:14px;height:' + (16 + i * 9) + 'px;background:' +
+        (i < thisWeek ? '#fff' : 'rgba(255,255,255,.28)')),
+
+      stats: [
+        ['Live / committed', live.length, INK, '#1F3D6B'],
+        ['Interviews live', APPS.filter(a => ['Interview','Offer'].includes(a.status)).length, LIVE, '#7A3B62'],
+        ['Warm threads', warmContacts, INK, '#E0A32E'],
+        ['Awaiting response', APPS.filter(a => a.status === 'Applied').length, INK, '#9AA09C'],
+        ['Gone cold', cold, BURN, BURN],
+        ['Response rate', rate + '%', LIVE, LIVE]
+      ].map(s => ({
+        label:s[0], value:s[1], ink:s[2], bar:s[3],
+        cellStyle:'border-right:1px solid ' + RULE + ';border-top:1px solid ' + RULE
+      })),
+
+      ghostRate:String(ghostRate), ghostFrac: ghosted.length + ' of ' + closed.length,
+      ghostInk: ghostRate > 40 ? BURN : LIVE,
+      ghostBarStyle:'width:' + ghostRate + '%;background:' + (ghostRate > 40 ? BURN : LIVE),
+      baselineMarkStyle:'position:absolute;top:-3px;bottom:-3px;left:53.6%;width:2px;background:#E0A32E',
+      silentCount:String(silentQ.length),
+      silent: silentQ.map(a => {
+        const days = D(a.last_touch || a.date);
+        const flagged = days >= 45;
+        return {
+          company:a.company, role:a.role, days:String(days), channel:a.channel.toUpperCase(),
+          flag: flagged ? ' · PAST 45D — LOOKS GHOSTED' : '',
+          rowStyle:'padding:13px 15px;border-bottom:1px solid ' + RULE + (flagged ? ';border-left:4px solid ' + BURN : ''),
+          daysStyle:"font:700 12px/1 'Roboto Mono',monospace;letter-spacing:.06em;color:" + (flagged ? BURN : SOFT),
+          track: dark ? '#22262A' : '#E9EBE6',
+          hatch:'position:absolute;inset:0;background:repeating-linear-gradient(115deg,' + (flagged ? BURN : SOFT) + ' 0 3px,transparent 3px 8px);opacity:.55'
+        };
+      }),
+
+      sourcedTotal:String(reached.sourced), board, conversions,
+
+      followStats: [
+        ['Warm touch due now', dueNow, dueNow > 0 ? BURN : LIVE],
+        ['Queued, not due', live.filter(a => !a.warm && a.warm_due && D(a.warm_due) < 0).length, INK],
+        ['Warm touch done', live.filter(a => a.warm).length, LIVE],
+        ['Awaiting my reply', chaseThreads.length, INK]
+      ].map(s => ({
+        label:s[0], value:s[1], ink:s[2],
+        cellStyle:'padding:' + pad + ';border-right:1px solid ' + RULE
+      })),
+      followCards,
+      chaseCount:String(chaseThreads.length),
+      chase: chaseThreads.map(t => ({ name:t.name, last:t.last, date:SHORT(t.date), status:t.status.toUpperCase() })),
+
+      rates:rateBuckets, chips, contacts,
+
+      statusChips, tableRows, tableCount:String(tableRows.length),
+      tableHead:['','Company','Role','Status','Date','Channel','Touch'],
+
+      liftWith:String(rw), liftWithout:String(ro), lift:String(rw - ro),
+      verdictYes:'2', verdictNo:'1', verdictUnclear:'1',
+      chHead:['Channel','Sent','Response','','Ghost'],
+      channels, stagesReached, closeTypes, lessons,
+
+      settings: [
+        { label:'Weekly application target', value:'5', unit:'per week', bar:acc, hint:'Below this, the pipeline banner turns and tells you the top of funnel is thin.' },
+        { label:'Ghost threshold', value:'45', unit:'days', bar:'#E0A32E', hint:'Silence past this point is flagged as ghosted and offered for confirmation.' },
+        { label:'Warm touch delay', value:'2', unit:'days', bar:'#1F3D6B', hint:'How long after an application is submitted the warm touch is queued.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
