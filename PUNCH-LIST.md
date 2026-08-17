@@ -111,7 +111,11 @@ fixing what surfaces.
 | D2 | Split into **Fit** (`fit_score`) and **Reachability** (`reach_score`). Both populated on all 199 with reasons. Fit 0–100, reach 15–80 | VERIFIED |
 | D3 | Fractions beside rates, "too few to read" under n=10 | LANDED (agent report, not re-read) |
 | D4 | ~~Push the rewritten `AGENTS.md`~~ — pushed 2026-08-17. Repo copy is now **canonical**; `output/lovable/AGENTS.md` is a stale export | DONE |
-| D7 | **Batch 2 shipped 2026-08-17**: chrome tokens (dark bars no longer flip), hairline grids via `gap:1px`, disabled empty states, `COLD` relabelled `QUIET 30D+`, Actioned/Drafted chip overlap fixed, CSV importer chunked at 500, response-rate panel states its own basis | VERIFIED in source for the importer; visual items unconfirmed |
+| D7 | **Batch 2 shipped 2026-08-17**: chrome tokens (dark bars no longer flip), hairline grids via `gap:1px`, disabled empty states, `COLD` relabelled `QUIET 30D+`, Actioned/Drafted chip overlap fixed, CSV importer chunked at 500, response-rate panel states its own basis | VERIFIED in source: `deck.tsx` chrome tokens + `StatGrid` gap; `csv.ts` chunking |
+| D8 | **Weekly application target removed entirely** 2026-08-17, per Jason. Not nulled — deleted. `SettingsView` field, `appliedThisWeek`, `pipelineHealth`, `DEFAULT_WEEKLY_TARGET`, the Pipeline health hero banner, and the "Applications, last 14 days" process line are all gone. DB column left in place, unused and unread | VERIFIED |
+| D9 | **Response rate collapsed from four cells to one.** `opener_type` is `template` on every row, so Template duplicated Overall and Custom/Warm read 0/0. Now a single "Replies across all threads" cell with the fraction, the stored baselines beside it, and a line saying why the split is absent. Per-thread `opener_type` selector kept so the split can return | VERIFIED |
+| D10 | Dead-code sweep. Only `PLUM` and `liveLight` were genuinely unreferenced and are deleted. **`ImportBar.tsx` is NOT dead** — imported at `routes/index.tsx:48`, used at `:398`. `GREEN`, `SPECTRUM`, `DotTexture`, `ReelSvg`, `BarRow`, `chipStyle`, `stageInk`, `stageColor`, `STAGE_COLORS`, `STAGE_INK` all have live references. No file in `desk/**` or `lib/**` is unimported | VERIFIED |
+| D11 | **Smoke test:** app loads at `mycareercommand.lovable.app` after all five passes — auth gate renders, zero console errors, no white screen. Typecheck and lint clean. Past sign-in is untested by me and needs Jason | VERIFIED |
 
 ## D5. The gate — ask a question, never score seniority
 
