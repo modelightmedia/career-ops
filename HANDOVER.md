@@ -3,6 +3,33 @@
 Written 2026-08-15 for whoever picks this up next, human or agent.
 Read this before touching anything. It will save you a day.
 
+> ## Superseded in places — read this first
+>
+> A second session on **2026-08-15 (afternoon)** changed the numbers below. **`PUNCH-LIST.md` is
+> authoritative where the two disagree.** What changed:
+>
+> - **90 applications → 199.** A fresh LinkedIn export (15 Aug, current to 13 Aug) added 106. Three
+>   more were found in Gmail and existed in no dataset at all: Marriott, VF Corporation, Jacques
+>   Marie Mage.
+> - **The channel table below is incomplete.** Correct: direct email 5 of 14 · recruiter 1 of 1 ·
+>   company ATS 1 of 75 · **LinkedIn 0 of 106**. Self-serve channels together are 1 interview from
+>   181 applications.
+> - **"151 applications Nov–Apr produced zero interviews, the 18 in July produced six" is wrong.**
+>   July was 45 applications, the joint-heaviest month of the search. May was 49. What changed in
+>   July was channel, not restraint. Do not repeat the "volume stopped, targeting started" story.
+> - **1,107 people replied on LinkedIn and never got an answer**, 432 of them substantive. This is
+>   the largest unworked thing in the system. Import CSVs are in `output/app-seed/`.
+> - **Work-search log is 290 → 301 rows**, not the 193 stated below. It was never stale.
+> - **MBTI is resolved to INTP** (2026-08-15). Usable in documents.
+> - **Jason's own conclusion:** volume applying does not work. Application count is no longer a
+>   progress metric — see `modes/_custom.md`, "Volume does not work". `settings.weekly_target` is cut.
+> - **Email sweeps must query by ATS sender domain**, not company name. Confirmations come from
+>   `myworkday.com`, `ashbyhq.com`, `hire.lever.co`, `successfactors.com` and name the employer only
+>   in the subject. Searching by company name missed them for months. Fixed in the fortnightly task.
+>
+> Sections 1 to 6 below (who Jason is, architecture, connections, working method, the hard-won
+> rules) are unchanged and still correct. Section 7 onward is partly superseded.
+
 ---
 
 ## 1. What this is

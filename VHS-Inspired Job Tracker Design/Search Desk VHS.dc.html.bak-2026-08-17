@@ -6,52 +6,6 @@
 <script src="./support.js"></script>
 </head>
 <body>
-<!--
-  ==========================================================================
-  IMPLEMENTER'S NOTE — added 2026-08-17. Read before porting anything.
-
-  This file was edited by a design agent that could NOT see the live app
-  (it is behind auth). It correctly fixed real visual defects, but it also
-  read normal mock scaffolding as bugs and "fixed" it. Not everything here
-  is design intent.
-
-  PORT THESE — real design fixes, verified:
-    1. Chrome token pair. --sd-chrome / --sd-chrome-ink / --sd-chrome-soft,
-       split out from --sd-ink so dark bars stay dark in dark mode instead
-       of inverting with the text colour. Apply to every dark header bar,
-       table head and readout strip.
-    2. Hairlines. Grids use gap:1px over a --sd-rule background with cells
-       filled --sd-panel, replacing per-cell border-right. Removes double
-       borders and the orphaned trailing border. The old
-       margin:-1px -1px 13px compensation hack is correctly gone.
-    3. Empty states. Contact button disables at zero matches, reads
-       "No contact yet", 45% opacity, panel forced closed.
-
-  DO NOT PORT — invented defects or smuggled behaviour:
-    4. "Fabricated 247 contacts". 247 is the REAL contact count in the
-       database. Nothing was fabricated. The computed replacement is
-       mock-only and never runs in production, which reads Postgres.
-    5. Response-rate axis changed from opener type to Tier A/B/C. This is
-       a product decision, not a bug fix, and it deletes a real signal:
-       custom openers run 50.0% against templates at 29.2%. It also
-       orphans three live settings fields that exist to feed that panel —
-       resp_baseline_template, resp_baseline_custom, resp_baseline_overall.
-       KEEP THE OPENER CUT.
-    6. Settings thresholds. Every default below contradicts the database:
-         weekly target   design 5   vs  DB null (deliberately cut 2026-08-15)
-         ghost threshold design 45  vs  DB 30
-         warm touch delay design 2  vs  DB 3
-       The database is authoritative. Do not change thresholds from here.
-    7. Weekly-target banner ("top of funnel is thin"). Volume is explicitly
-       not a progress metric — see modes/_custom.md, "Volume does not work".
-       Do not build the banner.
-    8. Chip filter: Actioned now excludes Drafted as well as New. A blind
-       semantic change that alters chip counts. Decide it deliberately.
-
-  Sample data in this file is SAMPLE DATA. It is what a design mock is made
-  of. Do not treat hardcoded numbers here as defects.
-  ==========================================================================
--->
 <x-dc>
 <helmet>
 <link rel="stylesheet" href="_ds/modernist-8ec2ac42-b224-48db-bb9d-d219fcda2c7e/styles.css">
@@ -75,7 +29,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
 <div style="{{ vars }}">
 <div style="min-height:100vh;background:var(--sd-ground,#E9EBE6);color:var(--sd-ink,#16181A)">
 
-<header style="position:sticky;top:0;z-index:40;background:var(--sd-chrome,#16181A);border-bottom:2px solid var(--sd-chrome,#16181A)">
+<header style="position:sticky;top:0;z-index:40;background:var(--sd-ink,#16181A);border-bottom:2px solid var(--sd-ink,#16181A)">
   <div style="max-width:1080px;margin:0 auto;padding:0 16px;display:flex;align-items:stretch;gap:14px">
     <div style="display:flex;align-items:center;gap:9px;padding:9px 0;flex:none">
       <div style="width:22px;height:22px;background:var(--sd-accent,#A8451C);display:flex;align-items:center;justify-content:center">
@@ -135,14 +89,14 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
   </div>
 
   <div>
-    <div style="background:var(--sd-chrome,#16181A);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
-      <span style="font:700 11px/1 'Roboto Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--sd-chrome-ink,#fff)">Readout</span>
-      <span style="font:400 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:var(--sd-chrome-soft,#9AA09C)">SUPER HIGH GRADE · 30D WINDOW</span>
+    <div style="background:var(--sd-ink,#16181A);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <span style="font:700 11px/1 'Roboto Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#fff">Readout</span>
+      <span style="font:400 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:#9AA09C">SUPER HIGH GRADE · 30D WINDOW</span>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(31%,1fr));gap:1px;border:2px solid var(--sd-ink,#16181A);border-top:0;background:var(--sd-rule,#C6CAC2)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(31%,1fr));border:2px solid var(--sd-ink,#16181A);border-top:0;background:var(--sd-panel,#F3F4F0)">
       <sc-for list="{{ stats }}" as="s" hint-placeholder-count="6">
         <div style="{{ s.cellStyle }}">
-          <div style="height:5px;background:{{ s.bar }};margin:0 0 13px"></div>
+          <div style="height:5px;background:{{ s.bar }};margin:-1px -1px 13px"></div>
           <div style="padding:0 13px 14px">
             <div style="font:500 10px/1.25 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">{{ s.label }}</div>
             <div style="font:700 34px/.85 'Roboto Mono',monospace;letter-spacing:-.02em;color:{{ s.ink }};margin-top:11px">{{ s.value }}</div>
@@ -158,7 +112,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
       <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">Ghost rate vs baseline</span>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:16px">
-      <div style="border:2px solid var(--sd-chrome,#16181A);background:var(--sd-chrome,#16181A);padding:16px 17px 18px;position:relative;overflow:hidden">
+      <div style="border:2px solid var(--sd-ink,#16181A);background:var(--sd-ink,#16181A);padding:16px 17px 18px;position:relative;overflow:hidden">
         <div style="position:absolute;inset:0;opacity:var(--sd-tex,.4);background-image:radial-gradient(#E9EBE6 .7px,transparent .8px);background-size:5px 5px;pointer-events:none"></div>
         <div style="position:relative">
           <div style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#9AA09C">Now</div>
@@ -263,7 +217,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
 <div style="padding-top:22px;display:flex;flex-direction:column;gap:20px">
   <div style="font:400 12px/1.6 Archivo,sans-serif;color:var(--sd-soft,#5B615F);max-width:64ch">A warm touch is auto-queued two days after each application is submitted. Nothing is ever sent for you — these are prompts to act.</div>
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;border:2px solid var(--sd-ink,#16181A);background:var(--sd-rule,#C6CAC2)">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border:2px solid var(--sd-ink,#16181A);background:var(--sd-panel,#F3F4F0)">
     <sc-for list="{{ followStats }}" as="s" hint-placeholder-count="4">
       <div style="{{ s.cellStyle }}">
         <div style="font:500 10px/1.25 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">{{ s.label }}</div>
@@ -314,7 +268,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
             <div style="border-top:1px solid var(--sd-rule,#C6CAC2);margin-top:14px;padding-top:11px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
               <span style="{{ f.warmStyle }}">Warm touch · {{ f.warmLabel }}</span>
               <div style="display:flex;gap:5px;flex-wrap:wrap">
-                <button onClick="{{ f.toggleOpen }}" disabled="{{ f.noMatches }}" style="{{ f.openBtnStyle }}">{{ f.openLabel }}</button>
+                <button onClick="{{ f.toggleOpen }}" style="border:1px solid var(--sd-rule,#C6CAC2);background:transparent;color:var(--sd-soft,#5B615F);font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:8px 9px;cursor:pointer">{{ f.openLabel }}</button>
                 <button style="border:1px solid var(--sd-ink,#16181A);background:var(--sd-ink,#16181A);color:var(--sd-panel,#F3F4F0);font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:8px 9px;cursor:pointer">Log manually</button>
                 <button style="border:1px solid var(--sd-rule,#C6CAC2);background:transparent;color:var(--sd-soft,#5B615F);font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:8px 9px;cursor:pointer">Close</button>
               </div>
@@ -370,11 +324,11 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
 <div style="padding-top:22px;display:flex;flex-direction:column;gap:20px">
 
   <div>
-    <div style="background:var(--sd-chrome,#16181A);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
-      <span style="font:700 11px/1 'Roboto Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:var(--sd-chrome-ink,#fff)">Response rate by opener</span>
-      <span style="font:400 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:var(--sd-chrome-soft,#9AA09C)">{{ contactCount }} CONTACTS ON FILE</span>
+    <div style="background:var(--sd-ink,#16181A);padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px">
+      <span style="font:700 11px/1 'Roboto Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#fff">Response rate by opener</span>
+      <span style="font:400 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;color:#9AA09C">247 CONTACTS ON FILE</span>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;border:2px solid var(--sd-ink,#16181A);border-top:0;background:var(--sd-rule,#C6CAC2)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));border:2px solid var(--sd-ink,#16181A);border-top:0;background:var(--sd-panel,#F3F4F0)">
       <sc-for list="{{ rates }}" as="r" hint-placeholder-count="4">
         <div style="{{ r.cellStyle }}">
           <div style="font:500 10px/1.25 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--sd-soft,#5B615F)">{{ r.label }}</div>
@@ -445,9 +399,9 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
 
   <div style="border:2px solid var(--sd-ink,#16181A);background:var(--sd-panel,#F3F4F0);overflow-x:auto">
     <div style="min-width:760px">
-      <div style="display:grid;grid-template-columns:8px 1.3fr 1.6fr 104px 92px 108px 92px;background:var(--sd-chrome,#16181A);padding:0 12px">
+      <div style="display:grid;grid-template-columns:8px 1.3fr 1.6fr 104px 92px 108px 92px;background:var(--sd-ink,#16181A);padding:0 12px">
         <sc-for list="{{ tableHead }}" as="h" hint-placeholder-count="7">
-          <div style="font:700 9px/1 'Roboto Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--sd-chrome-ink,#fff);padding:11px 8px 11px 0">{{ h }}</div>
+          <div style="font:700 9px/1 'Roboto Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#fff;padding:11px 8px 11px 0">{{ h }}</div>
         </sc-for>
       </div>
       <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="10">
@@ -473,7 +427,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
 <sc-if value="{{ isFeedback }}" hint-placeholder-val="{{ true }}">
 <div style="padding-top:22px;display:flex;flex-direction:column;gap:26px">
 
-  <div style="border:2px solid var(--sd-chrome,#16181A);background:var(--sd-chrome,#16181A);position:relative;overflow:hidden">
+  <div style="border:2px solid var(--sd-ink,#16181A);background:var(--sd-ink,#16181A);position:relative;overflow:hidden">
     <div style="position:absolute;inset:0;opacity:var(--sd-tex,.4);background-image:radial-gradient(#E9EBE6 .7px,transparent .8px);background-size:5px 5px;pointer-events:none"></div>
     <div style="position:relative;padding:18px 19px 20px">
       <div style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:#9AA09C">Does the warm touch earn its place?</div>
@@ -492,7 +446,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
           <div style="font:700 46px/.82 'Roboto Mono',monospace;color:var(--sd-accent,#A8451C);margin-top:9px">+{{ lift }}</div>
         </div>
       </div>
-      <div style="font:400 11px/1.55 Archivo,sans-serif;color:#9AA09C;margin-top:16px;max-width:56ch">Judged by hand on the {{ verdictTotal }} closed applications that carried a warm touch: {{ verdictYes }} helped, {{ verdictNo }} went silent anyway, {{ verdictUnclear }} unclear.</div>
+      <div style="font:400 11px/1.55 Archivo,sans-serif;color:#9AA09C;margin-top:16px;max-width:56ch">Judged by hand on closed applications: {{ verdictYes }} said the warm touch helped, {{ verdictNo }} said it didn't, {{ verdictUnclear }} unclear.</div>
     </div>
   </div>
 
@@ -503,9 +457,9 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
     </div>
     <div style="border:2px solid var(--sd-ink,#16181A);border-top:0;background:var(--sd-panel,#F3F4F0);overflow-x:auto">
       <div style="min-width:600px">
-        <div style="display:grid;grid-template-columns:1.2fr 70px 90px 1fr 90px;background:var(--sd-chrome,#16181A);padding:0 12px">
+        <div style="display:grid;grid-template-columns:1.2fr 70px 90px 1fr 90px;background:var(--sd-ink,#16181A);padding:0 12px">
           <sc-for list="{{ chHead }}" as="h" hint-placeholder-count="5">
-            <div style="font:700 9px/1 'Roboto Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--sd-chrome-ink,#fff);padding:11px 8px 11px 0">{{ h }}</div>
+            <div style="font:700 9px/1 'Roboto Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#fff;padding:11px 8px 11px 0">{{ h }}</div>
           </sc-for>
         </div>
         <sc-for list="{{ channels }}" as="c" hint-placeholder-count="4">
@@ -589,7 +543,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #A8451C;outline-offset:2p
           <div style="font:400 12px/1.5 Archivo,sans-serif;color:var(--sd-soft,#5B615F);margin-top:8px;max-width:44ch">{{ s.hint }}</div>
         </div>
         <div style="display:flex;align-items:center;gap:9px;flex:none">
-          <input type="text" inputmode="numeric" value="{{ s.value }}" onChange="{{ s.onChange }}" aria-label="{{ s.label }}" style="width:66px;border:1px solid var(--sd-ink,#16181A);background:var(--sd-ground,#E9EBE6);color:var(--sd-ink,#16181A);font:700 20px/1 'Roboto Mono',monospace;padding:9px 10px;text-align:right;outline:none">
+          <input type="text" value="{{ s.value }}" style="width:66px;border:1px solid var(--sd-ink,#16181A);background:var(--sd-ground,#E9EBE6);color:var(--sd-ink,#16181A);font:700 20px/1 'Roboto Mono',monospace;padding:9px 10px;text-align:right;outline:none">
           <span style="font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--sd-soft,#5B615F);width:44px">{{ s.unit }}</span>
         </div>
       </div>
@@ -667,10 +621,7 @@ const TIER_COLORS = { A:'#A8451C', B:'#1F3D6B', C:'#5B615F' };
 const TIER_GRADE = { A:'SHG', B:'HG', C:'STD' };
 
 class Component extends DCLogic {
-  state = { view:'Pipeline', dark:null, chip:'To work', statusChip:'All', open:{}, cfg:{ target:'5', ghost:'45', delay:'2' } };
-
-  num(key, fallback) { const n = parseInt(this.state.cfg[key], 10); return isNaN(n) ? fallback : n; }
-  setCfg(key, v) { this.setState(s => ({ cfg: Object.assign({}, s.cfg, { [key]: v.replace(/[^0-9]/g, '').slice(0, 3) }) })); }
+  state = { view:'Pipeline', dark:null, chip:'To work', statusChip:'All', open:{} };
 
   isDark() { return this.state.dark === null ? (this.props.theme || 'Light') === 'Dark' : this.state.dark; }
   acc() { return this.props.accent || '#A8451C'; }
@@ -715,14 +666,12 @@ class Component extends DCLogic {
       '--sd-ground':'#16181A', '--sd-panel':'#1E2124', '--sd-ink':'#E9EBE6', '--sd-soft':'#9AA09C',
       '--sd-rule':'#333A38', '--sd-blueprint':'#7FA0D4', '--sd-live':'#6FAE8B', '--sd-burn':'#D97A4E',
       '--sd-live-l':'#6FAE8B', '--sd-accent':acc,
-      '--sd-chrome':'#16181A', '--sd-chrome-ink':'#ffffff', '--sd-chrome-soft':'#9AA09C',
       '--sd-tex': retro === 'Full' ? .8 : retro === 'Bold' ? .4 : .12,
       '--sd-scan': retro === 'Full' ? .8 : retro === 'Bold' ? .3 : 0
     } : {
       '--sd-ground':'#E9EBE6', '--sd-panel':'#F3F4F0', '--sd-ink':'#16181A', '--sd-soft':'#5B615F',
       '--sd-rule':'#C6CAC2', '--sd-blueprint':'#1F3D6B', '--sd-live':'#2F6B4F', '--sd-burn':'#A8451C',
       '--sd-live-l':'#6FAE8B', '--sd-accent':acc,
-      '--sd-chrome':'#16181A', '--sd-chrome-ink':'#ffffff', '--sd-chrome-soft':'#9AA09C',
       '--sd-tex': retro === 'Full' ? .8 : retro === 'Bold' ? .4 : .12,
       '--sd-scan': retro === 'Full' ? .8 : retro === 'Bold' ? .3 : 0
     };
@@ -756,8 +705,7 @@ class Component extends DCLogic {
     const warmContacts = CONTACTS.filter(c => ['Replied','Meeting'].includes(c.status)).length;
     const cold = live.filter(a => this.clock(a).tone === 'cold').length;
     const thisWeek = APPS.filter(a => { const d = D(a.date); return d !== null && d <= 7 && !['Evaluated','SKIP'].includes(a.status); }).length;
-    const weeklyTarget = this.num('target', 5);
-    const ghostDays = this.num('ghost', 45);
+    const weeklyTarget = 5;
     const thin = thisWeek < weeklyTarget;
     const sourced = APPS.filter(a => a.status === 'Evaluated').length;
 
@@ -827,11 +775,8 @@ class Component extends DCLogic {
         reelSpin: 'transform-origin:17px 17px' + (c.tone === 'cold' ? '' : ';animation:sdreel 4.5s linear infinite'),
         warmStyle:"font:500 10px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:" + (!a.warm ? BURN : SOFT),
         warmLabel,
-        openLabel: matches.length === 0 ? 'No contact yet' : isOpen ? 'Hide' : matches.length + (matches.length === 1 ? ' contact' : ' contacts'),
-        noMatches: matches.length === 0,
-        openBtnStyle: "font:500 9px/1 'Roboto Mono',monospace;letter-spacing:.14em;text-transform:uppercase;padding:8px 9px;background:transparent;border:1px solid " +
-          RULE + ';color:' + SOFT + (matches.length === 0 ? ';opacity:.45;cursor:not-allowed' : ';cursor:pointer'),
-        open: isOpen && matches.length > 0,
+        openLabel: isOpen ? 'Hide' : matches.length + (matches.length === 1 ? ' contact' : ' contacts'),
+        open: isOpen,
         toggleOpen: () => this.setState(s => ({ open: Object.assign({}, s.open, { [a.id]: !s.open[a.id] }) })),
         matches: matches.map(m => ({
           name:m.name, title:m.title, rank:rankLabel(m), grade:TIER_GRADE[m.tier],
@@ -846,7 +791,7 @@ class Component extends DCLogic {
       ['Tier A', CONTACTS.filter(c => c.tier === 'A').length],
       ['Tier B', CONTACTS.filter(c => c.tier === 'B').length],
       ['Tier C', CONTACTS.filter(c => c.tier === 'C').length],
-      ['Actioned', CONTACTS.filter(c => !['New','Drafted'].includes(c.status)).length],
+      ['Actioned', CONTACTS.filter(c => !['New'].includes(c.status)).length],
       ['All', CONTACTS.length]
     ];
     const chipSel = this.state.chip;
@@ -860,7 +805,7 @@ class Component extends DCLogic {
     const contactList = CONTACTS.filter(c => {
       if (chipSel === 'All') return true;
       if (chipSel === 'To work') return ['New','Drafted'].includes(c.status);
-      if (chipSel === 'Actioned') return !['New','Drafted'].includes(c.status);
+      if (chipSel === 'Actioned') return c.status !== 'New';
       return c.tier === chipSel.slice(-1);
     });
     const settled = c => !['New','Drafted'].includes(c.status);
@@ -881,24 +826,14 @@ class Component extends DCLogic {
       ]
     }));
 
-    const REACHED = ['Reached out','Replied','Meeting'];
-    const REPLIED = ['Replied','Meeting'];
-    const bucket = set => [set.filter(c => REACHED.includes(c.status)).length, set.filter(c => REPLIED.includes(c.status)).length];
     const rateBuckets = [
-      ['Overall', CONTACTS],
-      ['Tier A', CONTACTS.filter(c => c.tier === 'A')],
-      ['Tier B', CONTACTS.filter(c => c.tier === 'B')],
-      ['Tier C', CONTACTS.filter(c => c.tier === 'C')]
-    ].map((b, i) => {
-      const [n, r] = bucket(b[1]);
-      const p = pctOf(r, n);
-      return {
-        label:b[0], rate:p, frac:r + '/' + n,
-        ink: n === 0 ? SOFT : i === 0 ? INK : p >= 50 ? LIVE : BURN,
-        cellStyle:'padding:' + pad + ';background:' + PANEL,
-        barStyle:'width:' + p + '%;background:' + [INK, BURN, '#1F3D6B', LIVE][i]
-      };
-    });
+      ['Overall', 22, 9], ['Template opener', 14, 3], ['Custom opener', 8, 6], ['Warm touch', 6, 5]
+    ].map((b, i) => ({
+      label:b[0], rate:pctOf(b[2], b[1]), frac:b[2] + '/' + b[1],
+      ink: i === 0 ? INK : pctOf(b[2], b[1]) >= 50 ? LIVE : BURN,
+      cellStyle:'padding:' + pad + ';border-right:1px solid ' + RULE,
+      barStyle:'width:' + pctOf(b[2], b[1]) + '%;background:' + [INK, BURN, '#1F3D6B', LIVE][i]
+    }));
 
     const statusChipDefs = ['All','Applied','Responded','Interview','Rejected','Evaluated']
       .map(s => [s, s === 'All' ? APPS.length : APPS.filter(a => a.status === s).length]);
@@ -927,7 +862,6 @@ class Component extends DCLogic {
     const withWarm = sent.filter(a => a.warm);
     const withoutWarm = sent.filter(a => !a.warm);
     const respondedTo = a => ['Responded','Interview','Offer'].includes(a.status) || ['Personal rejection','Auto rejection'].includes(a.close);
-    const warmClosed = closed.filter(a => a.warm);
     const rw = pctOf(withWarm.filter(respondedTo).length, withWarm.length);
     const ro = pctOf(withoutWarm.filter(respondedTo).length, withoutWarm.length);
 
@@ -965,7 +899,7 @@ class Component extends DCLogic {
       Pipeline:['Career ops · apply → track → follow up → close', 'Pipeline'],
       Applications:['Every row, every channel', 'Applications'],
       'Follow up':['The 30-day touch window', 'Follow up'],
-      Network:[CONTACTS.length + ' contacts · tiered A / B / C', 'Network'],
+      Network:['247 contacts · tiered A / B / C', 'Network'],
       Feedback:['What the data says to change', 'Feedback'],
       Settings:['Targets and thresholds', 'Settings']
     };
@@ -995,7 +929,7 @@ class Component extends DCLogic {
         ['Response rate', rate + '%', LIVE, LIVE]
       ].map(s => ({
         label:s[0], value:s[1], ink:s[2], bar:s[3],
-        cellStyle:'background:' + PANEL
+        cellStyle:'border-right:1px solid ' + RULE + ';border-top:1px solid ' + RULE
       })),
 
       ghostRate:String(ghostRate), ghostFrac: ghosted.length + ' of ' + closed.length,
@@ -1005,10 +939,10 @@ class Component extends DCLogic {
       silentCount:String(silentQ.length),
       silent: silentQ.map(a => {
         const days = D(a.last_touch || a.date);
-        const flagged = days >= ghostDays;
+        const flagged = days >= 45;
         return {
           company:a.company, role:a.role, days:String(days), channel:a.channel.toUpperCase(),
-          flag: flagged ? ' · PAST ' + ghostDays + 'D — LOOKS GHOSTED' : '',
+          flag: flagged ? ' · PAST 45D — LOOKS GHOSTED' : '',
           rowStyle:'padding:13px 15px;border-bottom:1px solid ' + RULE + (flagged ? ';border-left:4px solid ' + BURN : ''),
           daysStyle:"font:700 12px/1 'Roboto Mono',monospace;letter-spacing:.06em;color:" + (flagged ? BURN : SOFT),
           track: dark ? '#22262A' : '#E9EBE6',
@@ -1025,33 +959,27 @@ class Component extends DCLogic {
         ['Awaiting my reply', chaseThreads.length, INK]
       ].map(s => ({
         label:s[0], value:s[1], ink:s[2],
-        cellStyle:'padding:' + pad + ';background:' + PANEL
+        cellStyle:'padding:' + pad + ';border-right:1px solid ' + RULE
       })),
       followCards,
       chaseCount:String(chaseThreads.length),
       chase: chaseThreads.map(t => ({ name:t.name, last:t.last, date:SHORT(t.date), status:t.status.toUpperCase() })),
 
-      rates:rateBuckets, chips, contacts, contactCount:String(CONTACTS.length),
+      rates:rateBuckets, chips, contacts,
 
       statusChips, tableRows, tableCount:String(tableRows.length),
       tableHead:['','Company','Role','Status','Date','Channel','Touch'],
 
       liftWith:String(rw), liftWithout:String(ro), lift:String(rw - ro),
-      verdictYes:String(warmClosed.filter(a => respondedTo(a)).length),
-      verdictNo:String(warmClosed.filter(a => a.close === 'Ghosted').length),
-      verdictUnclear:String(warmClosed.filter(a => !respondedTo(a) && a.close !== 'Ghosted').length),
-      verdictTotal:String(warmClosed.length),
+      verdictYes:'2', verdictNo:'1', verdictUnclear:'1',
       chHead:['Channel','Sent','Response','','Ghost'],
       channels, stagesReached, closeTypes, lessons,
 
       settings: [
-        { key:'target', label:'Weekly application target', unit:'per week', bar:acc, hint:'Below this, the pipeline banner turns and tells you the top of funnel is thin.' },
-        { key:'ghost', label:'Ghost threshold', unit:'days', bar:'#E0A32E', hint:'Silence past this point is flagged as ghosted and offered for confirmation.' },
-        { key:'delay', label:'Warm touch delay', unit:'days', bar:'#1F3D6B', hint:'How long after an application is submitted the warm touch is queued.' }
-      ].map(s => Object.assign({}, s, {
-        value: this.state.cfg[s.key],
-        onChange: e => this.setCfg(s.key, e.target.value)
-      }))
+        { label:'Weekly application target', value:'5', unit:'per week', bar:acc, hint:'Below this, the pipeline banner turns and tells you the top of funnel is thin.' },
+        { label:'Ghost threshold', value:'45', unit:'days', bar:'#E0A32E', hint:'Silence past this point is flagged as ghosted and offered for confirmation.' },
+        { label:'Warm touch delay', value:'2', unit:'days', bar:'#1F3D6B', hint:'How long after an application is submitted the warm touch is queued.' }
+      ]
     };
   }
 }
